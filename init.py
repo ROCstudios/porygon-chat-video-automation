@@ -21,16 +21,25 @@ def generate_video():
     try:
         conversation_data = generate_conversation(topic, turns)
         images_list = draw_conversation(conversation_data)
-        video = create_video(images_list)
+        temp_video_path = create_video(images_list)
         
-        # Send the video file as an attachment
-        return send_file(
-            video,
+        # Send file and then delete it after the response
+        return_data = send_file(
+            temp_video_path,
             mimetype='video/mp4',
             as_attachment=True,
             download_name=f'conversation_{topic}.mp4'
         )
+            
+        return return_data
+        
     except Exception as e:
+        # Clean up the temp file if there's an error
+        if 'temp_video_path' in locals():
+            try:
+                os.remove(temp_video_path)
+            except:
+                pass
         return jsonify({'error': str(e)}), 500
 
 def main():
