@@ -1,21 +1,21 @@
-import os
+import numpy as np
 from moviepy.editor import ImageSequenceClip, AudioFileClip
+from PIL import Image, ImageDraw
 
-def create_video(folder_name):
+def create_video(images_list: list[Image]):
     # Directory where images are stored
-    output_video = f"{folder_name}/chat_conversation.mp4"
+    output_video = f"chat_conversation.mp4"
 
     # Get files
     audio_file = "trend.mp3"
-    image_files = sorted([os.path.join(folder_name, img) for img in os.listdir(folder_name) if img.endswith(".png")])
-
+    numpy_images = [np.array(img) for img in images_list]
     # Define video parameters
     # Frames per second; adjust based on how fast you want the conversation to flow
     fps = 1  
-    duration = len(image_files) / fps
+    duration = len(images_list) / fps
 
     # Create the video clip
-    clip = ImageSequenceClip(image_files, fps=fps)
+    clip = ImageSequenceClip(numpy_images, fps=fps)
     audio = AudioFileClip(audio_file)
     clip = clip.set_audio(audio)
     clip = clip.set_duration(duration)

@@ -1,7 +1,5 @@
-import os
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import textwrap
-from datetime import datetime
 
 # Parameters for the chat image
 width, height = 500, 1000
@@ -107,19 +105,9 @@ def draw_bubble(draw, text, sender=True, timestamp="", status=None, y_position=0
     # Return the new y_position for the next message
     return y_position + bubble_height + 20
 
-# Function to draw date divider
-def draw_date_divider(draw, text, y_position):
-    # Replace textsize with textbbox
-    bbox = draw.textbbox((0, 0), text)
-    text_width = bbox[2] - bbox[0]
-    text_height = bbox[3] - bbox[1]
-    
-    divider_x_position = (width - text_width) // 2
-    draw.text((divider_x_position, y_position), text, fill=date_divider_color)
-    return y_position + text_height + 20
-
 # Draw the chat conversation
 def draw_conversation(conversation_data):
+  images_list = []
   current_y = 50 + action_bar_height  # Starting y position
 
   for i in range(len(conversation_data)):
@@ -139,15 +127,7 @@ def draw_conversation(conversation_data):
               timestamp=item["timestamp"], 
               y_position=current_y
           )
-      
-      # Generate a unique timestamp for the folder
-      timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-      folder_name = f"conversation_images_{timestamp}"
-      
-      # Create output directory if it doesn't exist
-      os.makedirs(folder_name, exist_ok=True)
-      
-      # Save the progressive conversation in the uniquely named folder
-      in_img.save(f"{folder_name}/conversation_{i+1}.png")
+          
+      images_list.append(in_img)
 
-  return folder_name
+  return images_list

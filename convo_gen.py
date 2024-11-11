@@ -26,8 +26,10 @@ realm, landscape, game-changing, in conclusion, firstly, secondly, lastly, delve
 When writing, you may use these words as needed or any words similar to the following, but never in the first line of any paragraph: first, second, third, important, equally, identically, uniquely, together with, likewise, comparatively, correspondingly, similarly, additionally, explore, crucial, whimsical, embrace, freedom, essential, imperative, important, whilst, explore, discover, elevate, solace.
 """  
 
-# Define an initial prompt
-prompt = f"""You are generating a friendly conversation between two people, Person 1 and Person 2, about {topic}. Each person should respond in 1 short sentence. Format each message in JSON format as follows: {{\"speaker\": \"Person X\", \"message\": \"Text\", \"timestamp\": \"Time\"}}. Each response should be a single JSON object.
+
+# Function to simulate a conversation between two personas
+def generate_conversation(topic, num_turns=5):
+    prompt = f"""You are generating a friendly conversation between two people, Person 1 and Person 2, about {topic}. Each person should respond in 1 short sentence. Format each message in JSON format as follows: {{\"speaker\": \"Person X\", \"message\": \"Text\", \"timestamp\": \"Time\"}}. Each response should be a single JSON object.
 
 Example:
 [
@@ -53,16 +55,10 @@ Example:
     }}
 ]
 """
-
-# Function to simulate a conversation between two personas
-def generate_conversation(topic, num_turns=5):
     conversation = []
     current_time = datetime.now()
 
     for turn in range(num_turns * 2):  # Multiply by 2 for alternating turns
-        # Determine which person is speaking
-        speaker = "Person 1" if turn % 2 == 0 else "Person 2"
-
         # Create a conversation prompt by including the dialogue so far
         conversation_prompt = f"{prompt}\n\nCurrent conversation:\n" + "\n".join([json.dumps(line) for line in conversation])
 
@@ -92,7 +88,5 @@ def generate_conversation(topic, num_turns=5):
             print("Error: Could not parse the response as JSON")
             return []
 
-    # Generate a conversation on a given topic
-    conversation_data = generate_conversation(topic, num_turns=5)
-    return conversation_data
+    return conversation
     
