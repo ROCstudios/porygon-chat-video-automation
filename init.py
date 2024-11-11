@@ -2,6 +2,7 @@ import argparse
 from image_gen import draw_conversation
 from movie_gen import create_video
 from convo_gen import generate_conversation
+from ig_poster import upload_to_instagram
 
 import os
 from flask import Flask, request, jsonify, send_file
@@ -14,6 +15,7 @@ def generate_video():
     data = request.get_json()
     topic = data.get('topic')
     turns = data.get('turns', 5)
+    post_to_ig = data.get('post_to_ig', False)
     
     if not topic:
         return jsonify({'error': 'Topic is required'}), 400
@@ -22,14 +24,26 @@ def generate_video():
         conversation_data = generate_conversation(topic, turns)
         images_list = draw_conversation(conversation_data)
         temp_video_path = create_video(images_list)
+
         
-        # Send file and then delete it after the response
+        if post_to_ig:
+            instagram_url = upload_to_instagram(
+                video_path=temp_video_path,
+                caption=f"AI generated conversation about {topic}"
+            )
+
         return_data = send_file(
             temp_video_path,
             mimetype='video/mp4',
             as_attachment=True,
             download_name=f'conversation_{topic}.mp4'
         )
+
+        if post_to_ig:
+            return jsonify({
+                'video': return_data,
+                'ig_post_url': instagram_url
+            })
             
         return return_data
         
