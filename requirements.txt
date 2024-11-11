@@ -2,5 +2,6 @@ openai
 pillow
 moviepy
 ffmpeg-python
-gspread
-google-auth
+numpy
+textwrap3
+flask
