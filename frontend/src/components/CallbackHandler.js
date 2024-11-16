@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { saveToken, saveRefreshToken } from "../util/TokenService";
 
 const CallbackHandler = () => {
   const navigate = useNavigate();
@@ -20,10 +21,12 @@ const CallbackHandler = () => {
             // code,
             code: '80-wN4DpQpIImAeMVuHJVpmtu00YRZqiOxhIsAlZ-P59UqyCuW4LXAz8L-CILvdH0bB2IlQyrQSHxcTcet7NCE3CHzx0aUscm7ayZY9fUvmPk9up1Ijs5nb6UY7_7v8jWmzc6LST-CVm8lXL5ZiOiWtzCekJQiq-yhBiUH8K9sj21i_hEoRQU4YDZxAe4jlp%2A1%216299.va'
           });
-          console.log("Response:", response);
 
           if (response.status === 200) {
-            navigate("/dashboard"); // Redirect to the dashboard after successful authentication
+            saveToken(response.data.access_token);
+            saveRefreshToken(response.data.refresh_token);
+             // Redirect to the dashboard after successful authentication
+            navigate("/dashboard");
           } else {
             alert("Authentication failed!");
           }
