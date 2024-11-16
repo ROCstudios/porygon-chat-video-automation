@@ -1,9 +1,10 @@
 import os
 import argparse
 from image_gen import draw_conversation
-from movie_gen import create_video
+from movie_gen import create_video, convert_to_9_16_ratio
 from convo_gen import generate_conversation
 from ig_poster import upload_to_instagram
+from cloud_storage import upload_to_gcs
 from oauth import get_auth, get_token, get_refresh_token
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, send_file
@@ -60,15 +61,14 @@ def generate_video():
         return jsonify({'error': 'Information is required'}), 400
     
     try:
-        conversation_data = generate_conversation(topic, turns)
+        # conversation_data = generate_conversation(topic, turns)
+        conversation_data = [{'speaker': 'Person 1', 'message': 'Do you believe in love at first sight?', 'timestamp': '11:00 AM'}, {'speaker': 'Person 2', 'message': 'Yes, I think it can happen.', 'timestamp': '11:02 AM'}, {'speaker': 'Person 1', 'message': "That's interesting. I feel the same way.", 'timestamp': '11:04 AM'}, {'speaker': 'Person 2', 'message': "It's a beautiful thing, isn't it?", 'timestamp': '11:06 AM'}, {'speaker': 'Person 1', 'message': 'Yes, it surely is.', 'timestamp': '11:08 AM'}]
         images_list = draw_conversation(conversation_data)
         temp_video_path = create_video(images_list)
+        cloud_video_path = upload_to_gcs(temp_video_path)
 
         if post_to_ig:
-            instagram_url = upload_to_instagram(
-                video_path=temp_video_path,
-                caption=caption
-            )
+            instagram_url = upload_to_instagram(cloud_video_path, caption)
             print(f"♻️ GENERATE: Instagram URL: {instagram_url}")
 
         # if post_to_tiktok:
@@ -78,7 +78,7 @@ def generate_video():
         #     )
 
         return_data_ig = send_file(
-            temp_video_path,
+            cloud_video_path,
             mimetype='video/mp4',
             as_attachment=True,
             download_name=f'conversation_{topic}.mp4'
@@ -95,13 +95,15 @@ def generate_video():
         return return_value
         
     except Exception as e:
-        # Clean up the temp file if there's an error
-        if 'temp_video_path' in locals():
-            try:
-                os.remove(temp_video_path)
-            except:
-                pass
+        print(f"🚨 GENERATE: Error: {e}")
         return jsonify({'error': str(e)}), 500
+        # # Clean up the temp file if there's an error
+        # if 'temp_video_path' in locals():
+        #     try:
+        #         os.remove(temp_video_path)
+        #     except:
+        #         pass
+        # return jsonify({'error': str(e)}), 500
 
 def main():
     parser = argparse.ArgumentParser(description='Generate conversation videos')

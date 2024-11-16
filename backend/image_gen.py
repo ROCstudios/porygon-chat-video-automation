@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw
 import textwrap
 
 # Parameters for the chat image
-width, height = 500, 1000
+width, height = 540, 960
 background_color = "#F0F0F0"  # Lightest grey in Pillow's web-safe colors
 sender_color = "lightgrey"
 receiver_color = "white"
