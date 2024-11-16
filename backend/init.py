@@ -49,7 +49,6 @@ def refresh_token():
 
 @app.route('/generate', methods=['POST'])
 def generate_video():
-    # Get parameters from JSON request
     data = request.get_json()
     topic = data.get('topic')
     turns = data.get('turns', 5)
@@ -70,6 +69,7 @@ def generate_video():
                 video_path=temp_video_path,
                 caption=caption
             )
+            print(f"♻️ GENERATE: Instagram URL: {instagram_url}")
 
         # if post_to_tiktok:
         #     tiktok_url = upload_to_tiktok(
@@ -83,14 +83,16 @@ def generate_video():
             as_attachment=True,
             download_name=f'conversation_{topic}.mp4'
         )
+        print(f"♻️ GENERATE: return_data_ig: {return_data_ig}")
 
         if post_to_ig:
-            return jsonify({
+            return_value = jsonify({
                 'video': return_data_ig,
                 'ig_post_url': instagram_url
             })
-            
-        return return_data
+            print(f"♻️ GENERATE: return_value: {return_value}")
+        
+        return return_value
         
     except Exception as e:
         # Clean up the temp file if there's an error

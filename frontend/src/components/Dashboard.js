@@ -17,6 +17,7 @@ const Dashboard = () => {
       alert("Please enter valid information");
       return;
     } else {
+      setLoading(true);
       try {
         const response = await axios.post('http://localhost:8080/generate', {
           topic: topic,
@@ -25,9 +26,12 @@ const Dashboard = () => {
           post_to_ig: postToIg,
           post_to_tiktok: postToTiktok
         });
+        console.log(response);
       } catch (error) {
         console.error('Error generating content:', error);
         alert('Failed to generate content');
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -68,8 +72,14 @@ const Dashboard = () => {
       </div>
       <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content text-center">
-          <div className="max-w-lg">
-            <h1 className="text-5xl font-bold">Enter Your Chat</h1>
+          {loading ? (
+            <div className="flex flex-col justify-center items-center h-full">
+              <p className="text-xl">Please wait...</p>
+              <span className="loading loading-dots loading-lg"></span>
+            </div>
+          ) : (
+            <div className="max-w-lg">
+              <h1 className="text-5xl font-bold">Enter Your Chat</h1>
             <p className="py-6">
               Describe your conversation and we'll post it for you and send back the video and links to access it.
             </p>
@@ -90,24 +100,34 @@ const Dashboard = () => {
                 <div className="form-control">
                   <label className="cursor-pointer label">
                     <span className="label-text">Post to Instagram</span>
-                    <input type="checkbox" className="checkbox checkbox-primary" />
+                    <input 
+                      type="checkbox" 
+                      className="checkbox checkbox-primary"
+                      checked={postToIg}
+                      onChange={(e) => setPostToIg(e.target.checked)}
+                    />
                   </label>
                 </div>
                 <div className="form-control">
                   <label className="cursor-pointer label">
                     <span className="label-text">Post to TikTok</span>
-                    <input type="checkbox" className="checkbox checkbox-secondary" />
+                    <input 
+                      type="checkbox" 
+                      className="checkbox checkbox-secondary"
+                      checked={postToTiktok}
+                      onChange={(e) => setPostToTiktok(e.target.checked)}
+                    />
                   </label>
                 </div>
               </div>
               <div className="w-1/2 pl-2">
                 <input type="range" min={0} max="10" value={turns} className="range mt-4" onChange={(e) => setTurns(e.target.value)} />
                 <p>Number of turns: {turns}</p>
-
               </div>
             </div>
-            <button className="btn btn-primary w-full max-w-lg mt-4" onClick={handleGenerate}>Generate!</button>
-          </div>
+              <button className="btn btn-primary w-full max-w-lg mt-4" onClick={handleGenerate}>Generate!</button>
+            </div>
+          )}
         </div>
       </div>
     </div>

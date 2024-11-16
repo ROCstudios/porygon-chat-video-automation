@@ -32,6 +32,7 @@ img = Image.new("RGB", (width, height), color=background_color)
 draw = ImageDraw.Draw(img)
 
 def draw_action_bar(draw):
+    print("✍️ DRAW ACTION BAR: Drawing action bar")
     draw.rectangle(
         [(0, 0), (width, action_bar_height)],
         fill=action_bar_color
@@ -69,6 +70,8 @@ def draw_action_bar(draw):
 
 # Function to draw a chat bubble
 def draw_bubble(draw, text, sender=True, timestamp="", status=None, y_position=0):
+    print(f"✍️ DRAW BUBBLE: Drawing bubble with text: {text}")
+
     # Determine bubble size
     max_text_width = 280
     wrapped_text = textwrap.fill(text, width=30)
@@ -107,6 +110,8 @@ def draw_bubble(draw, text, sender=True, timestamp="", status=None, y_position=0
 
 # Draw the chat conversation
 def draw_conversation(conversation_data):
+  print(f"✍️ DRAW CONVERSATION: Drawing conversation with {len(conversation_data)} turns")
+
   images_list = []
   current_y = 50 + action_bar_height  # Starting y position
 
@@ -130,4 +135,5 @@ def draw_conversation(conversation_data):
           
       images_list.append(in_img)
 
+  print(f"✍️ DRAW CONVERSATION: Images list: {images_list}")
   return images_list

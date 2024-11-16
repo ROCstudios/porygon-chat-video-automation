@@ -8,30 +8,31 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 #Prompts
 system_prompt = """
-write the text at an 3rd grade reading and writing level in simple language. The text you will rewrite will follow the colon (:) at the end. If there is no colon then rewrite your previous output in the conversation before this prompt, but only if there is no text after the colon.  You MUST keep the formatting and header formatting of the original.
-
-You must avoid technical jargon and business jargon so write in a casual and direct way without losing any of the key concepts in the text you are rewriting. Key concepts are defined as powerful statements, emotional sentences, or sentences containing industry terms or proper nouns.
+Write the text at an 3rd grade reading and writing level in simple language. You MUST keep the output in JSON format, specifically the JSON object properties are speaker, message, and timestamp inside json objects inside a single array.
 
 Constraints:
 * Remove emojis.
-* Never start with a question. Instead use an interest piquing personal statement.
-* Make sure there are smooth transitions between sentences.
-* Remove all metaphors and analogies.
+* Remove any labels, instructions, labels, or any other text that is not part of the conversation.
+* ONLY OUTPUT JSON.
 * Keep the same identical formatting of the existing text.
  * Remove any formatting like H1 (#), H2 (##), bold (**), etc or any other markdown formatting. Just use newlines and line breaks.
 
 When writing, please do not use the following words or phrases or any words similar to the following in any of the content:
 realm, landscape, game-changing, in conclusion, firstly, secondly, lastly, delve, in light of, not to mention, to say nothing of, by the same token, moreover, as well as, furthermore, therefore, top-notch, get ready, buckle up, switching gears, dive in, now let’s move on, in conclusion, demystifying, delve, ever-evolving, innovative solution, let’s dive in, let’s delve, folks, picturesque, unleash, dive in, voyage, picture this, say goodbye to, according to my database, treasure trove, let’s begin this journey, let’s delve, go deeper, explore now, navigating, delve into, shed light, gone are the days.
 
-When writing, you may use these words as needed or any words similar to the following, but never in the first line of any paragraph: first, second, third, important, equally, identically, uniquely, together with, likewise, comparatively, correspondingly, similarly, additionally, explore, crucial, whimsical, embrace, freedom, essential, imperative, important, whilst, explore, discover, elevate, solace.
+When writing, you may use these words as needed or any words similar to the following, but never in the first line of any chat: first, second, third, important, equally, identically, uniquely, together with, likewise, comparatively, correspondingly, similarly, additionally, explore, crucial, whimsical, embrace, freedom, essential, imperative, important, whilst, explore, discover, elevate, solace.
 """  
 
 
 # Function to simulate a conversation between two personas
 def generate_conversation(topic, num_turns=5):
-    prompt = f"""You are generating a friendly conversation between two people, Person 1 and Person 2, about {topic}. Each person should respond in 1 short sentence. Format each message in JSON format as follows: {{\"speaker\": \"Person X\", \"message\": \"Text\", \"timestamp\": \"Time\"}}. Each response should be a single JSON object.
+    print(f"💬 GENERATE CONVERSATION: Generating conversation about {topic} with {num_turns} turns")
+    prompt = f"""You are generating a friendly conversation between two people, Person 1 and Person 2, about {topic} that should only have {num_turns} text messages. Each person should respond in 1 short sentence. Format each message in JSON format as follows: {{\"speaker\": \"Person X\", \"message\": \"Text\", \"timestamp\": \"Time\"}}. Each response should be a single JSON object.
 
-Example:
+    Something else that is importatant is the timestamps.  They should be sequential and start with the current time like in the example below. There should be no discernable patterns to the timestamps.
+
+Here is an example of your output in JSON format between [EXAMPLE] and [END EXAMPLE].  
+[EXAMPLE]
 [
     {{   
         \"speaker\": \"Person 2\",
@@ -54,11 +55,14 @@ Example:
         \"timestamp\": \"01:50 PM\"
     }}
 ]
+[END EXAMPLE]
+
+Now generate the conversation about {topic} with {num_turns} turns in a JSON format like the example above after the colon:
 """
     conversation = []
     current_time = datetime.now()
 
-    for turn in range(num_turns * 2):  # Multiply by 2 for alternating turns
+    for turn in range(int(num_turns) * 2):  # Multiply by 2 for alternating turns
         # Create a conversation prompt by including the dialogue so far
         conversation_prompt = f"{prompt}\n\nCurrent conversation:\n" + "\n".join([json.dumps(line) for line in conversation])
 
@@ -68,24 +72,22 @@ Example:
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": conversation_prompt}
-            ]
+            ],
+            temperature=0.8
         )
-
+        print(f"GENERATE CONVERSATION: Response: {response}")
         try:
             # Parse the JSON response - it will be a list of messages
-            messages = json.loads(response.choices[0].message.content)
-            
-            # Take only the first num_turns * 2 messages (or all if fewer)
-            conversation = messages[:num_turns * 2]
-            
-            # Update timestamps to be sequential from current time
-            for i, msg in enumerate(conversation):
-                msg["timestamp"] = (current_time + timedelta(minutes=i * 2)).strftime("%I:%M %p")
-                
+            response_text = response.choices[0].message.content
+            print(f"💬 GENERATE CONVERSATION: Response text: {response_text}")
+            new_messages = json.loads(response_text)
+            print(f"💬 GENERATE CONVERSATION: New messages: {new_messages}")
+            conversation.extend(new_messages)
+            print(f"💬 GENERATE CONVERSATION: Conversation: {conversation}")
             return conversation
             
         except json.JSONDecodeError:
-            print("Error: Could not parse the response as JSON")
+            print("💬 GENERATE CONVERSATION: Error: Could not parse the response as JSON")
             return []
 
     return conversation
