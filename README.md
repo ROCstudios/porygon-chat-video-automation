@@ -1,6 +1,6 @@
 # Porygon Autonomous Chat VideoGenerator
 
- <img src="assets/porygon-logo.png" align="right" width="200" height="200" alt="Porygon Logo">
+ <img src="https://github.com/user-attachments/assets/3a1380fe-b7f7-45a2-be77-51bdf3b07909" align="right" width="100" height="100" alt="Porygon Logo">
 
 I would like to build an automated content generation AI that does the following:
 1. Generate scenarios
@@ -70,6 +70,20 @@ We'll be working with
 7. Make sure "Access Token" is enabled
 8. Click on "Save"
 
+#### Verifying your domain property for production ready TikTok callback for Oauth
+
+<img width="1657" alt="Screenshot 2024-11-12 at 5 36 16 PM" src="https://github.com/user-attachments/assets/f553f945-3567-4657-845e-957dca2d3894">
+
+<img width="1659" alt="Screenshot 2024-11-12 at 6 00 24 PM" src="https://github.com/user-attachments/assets/a6bf8ff4-15c9-4724-9128-882bafa5c1bd">
+
+<img width="1680" alt="Screenshot 2024-11-12 at 6 05 32 PM (2)" src="https://github.com/user-attachments/assets/1d8488a3-3485-408e-b52f-c7cf6cf613c8">
+
+
+<img width="1644" alt="Screenshot 2024-11-12 at 6 05 38 PM" src="https://github.com/user-attachments/assets/424ca2c2-c6f5-4dd8-9557-8cbc842850e6">
+
+<img width="1671" alt="Screenshot 2024-11-12 at 6 25 43 PM" src="https://github.com/user-attachments/assets/666cb892-abba-4011-8f6d-7740f66badf6">
+
+
 #### Creating a developer app with your instagram account and getting an access token
 
 1. Go to the [Instagram Developer Portal](https://developers.facebook.com/apps/) and log in with your Facebook account
@@ -81,6 +95,11 @@ We'll be working with
 7. Click on "Add Product" and select "Instagram"
 8. In the sidebar on the left, click on "Tools"
 
+<img width="1680" alt="Screenshot 2024-11-11 at 2 07 10 PM" src="https://github.com/user-attachments/assets/7bcac868-0269-4e59-a892-087235ac51dd">
+
+<img width="1680" alt="Screenshot 2024-11-11 at 2 07 27 PM" src="https://github.com/user-attachments/assets/72b8cbe9-19fd-47f3-8c54-d3d7c7405409">
+
+
 #### We'll need to take all of the information you just created and put it in the `backend/.env` file 
 
 In the root of the project with the following names (case sensitive):
@@ -90,4 +109,7 @@ In the root of the project with the following names (case sensitive):
 - TIKTOK_REDIRECT_URI
 - OPENAI_API_KEY
 - INSTAGRAM_TOKEN
+
+
+![Roc - Upwork Agency Banner](https://github.com/user-attachments/assets/79467e15-71b8-44ed-be35-d69701179169)
 
