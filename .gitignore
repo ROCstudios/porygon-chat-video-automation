@@ -1,6 +1,6 @@
-/env
-/venv
+backend/env
+backend/venv
+backend/.env
 .env
-.env
-porygon-video-generation-77fa8b367ac4.json
-key.json
+backend/porygon-video-generation-77fa8b367ac4.json
+backend/key.json
