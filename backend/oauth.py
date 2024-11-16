@@ -10,6 +10,54 @@ CORS(app)
 
 auth_url = 'https://www.tiktok.com/v2/auth/authorize/'
 
+def get_refresh_token(refresh_token):
+    try:
+        if not refresh_token:
+            return jsonify({'error': 'Refresh token is required'}), 400
+
+        # Get client credentials from environment
+        client_key = os.getenv('TIKTOK_CLIENT_KEY')
+        client_secret = os.getenv('TIKTOK_CLIENT_SECRET')
+
+        # Prepare request data
+        data = {
+            'client_key': client_key,
+            'client_secret': client_secret,
+            'grant_type': 'refresh_token',
+            'refresh_token': refresh_token
+        }
+
+        # Make request to TikTok API
+        response = requests.post(
+            'https://open.tiktokapis.com/v2/oauth/token/',
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Cache-Control': 'no-cache'
+            },
+            data=data
+        )
+
+        response_data = response.json()
+
+        # Check for error in response
+        if 'error' in response_data:
+            return {
+                'error': response_data.get('error'),
+                'error_description': response_data.get('error_description')
+            }
+
+        # Return new tokens and related data
+        return {
+            'access_token': response_data.get('access_token'),
+            'refresh_token': response_data.get('refresh_token'),
+            'expires_in': response_data.get('expires_in'),
+            'refresh_expires_in': response_data.get('refresh_expires_in'),
+            'open_id': response_data.get('open_id'),
+            'scope': response_data.get('scope')
+        }
+
+    except Exception as e:
+        return {'error': str(e)}
 
 def get_tiktok_auth_token(code):
     '''

@@ -3,9 +3,9 @@ from image_gen import draw_conversation
 from movie_gen import create_video
 from convo_gen import generate_conversation
 from ig_poster import upload_to_instagram
-from oauth import get_auth, get_token
-import os
+from oauth import get_auth, get_token, get_refresh_token
 from dotenv import load_dotenv
+
 
 import os
 from flask import Flask, request, jsonify, send_file
@@ -42,6 +42,12 @@ def get_token_from_url():  # Remove the code parameter
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/refresh', methods=['POST'])
+def refresh_token():
+    data = request.get_json()
+    refresh_token = data.get('refresh_token')
+    return jsonify(get_refresh_token(refresh_token))
 
 @app.route('/generate', methods=['POST'])
 def generate_video():
