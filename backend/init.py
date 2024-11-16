@@ -1,3 +1,4 @@
+import os
 import argparse
 from image_gen import draw_conversation
 from movie_gen import create_video
@@ -5,9 +6,6 @@ from convo_gen import generate_conversation
 from ig_poster import upload_to_instagram
 from oauth import get_auth, get_token, get_refresh_token
 from dotenv import load_dotenv
-
-
-import os
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 

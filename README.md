@@ -2,6 +2,25 @@
 
  <img src="https://github.com/user-attachments/assets/3a1380fe-b7f7-45a2-be77-51bdf3b07909" align="right" width="100" height="100" alt="Porygon Logo">
 
+ ### Quick Start Commands in Dev Mode
+
+Run react app
+```
+cd frontend && npm install && npm start
+```
+Ensure daisyUI is running
+```
+cd frontend && npx tailwindcss -i ./src/index.css -o ./src/output.css --watch
+```
+Run flask backend
+```
+cd backend && python init.py
+```
+
+### Deployment Instructions
+
+### Project Description
+
 I would like to build an automated content generation AI that does the following:
 1. Generate scenarios
    - Create dynamic conversations between two people
