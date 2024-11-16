@@ -5,9 +5,7 @@ from convo_gen import generate_conversation
 from ig_poster import upload_to_instagram
 from oauth import get_auth, get_token
 import os
-import requests
-import secrets
-import urllib
+from dotenv import load_dotenv
 
 import os
 from flask import Flask, request, jsonify, send_file
@@ -21,7 +19,7 @@ CORS(app, resources={
         "allow_headers": ["Content-Type", "Authorization"]
     }
 })
-
+load_dotenv()
 
 @app.route('/auth', methods=['GET'])
 def auth():
