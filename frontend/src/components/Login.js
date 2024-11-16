@@ -1,8 +1,11 @@
 import React from "react";
+import axios from "axios";
 
 const Login = () => {
-  const handleLogin = () => {
-    const authUrl = "http://localhost:5000/auth"; // Flask server OAuth endpoint
+  const handleLogin = async () => {
+    const response = await axios.get("http://localhost:8080/auth");
+    const authUrl = response.data.url;
+    console.log("Auth URL:", authUrl);
     window.location.href = authUrl; // Redirect to the Flask OAuth endpoint
   };
 
