@@ -48,25 +48,19 @@ def generate_auth_url():
     url = auth_url + '?' + urllib.parse.urlencode(params)
     return url
 
-@app.route('/auth', methods=['GET'])
-def auth():
-    generated_url = generate_auth_url()
-    print(generated_url)
-    return jsonify({'url': generated_url})
+def get_auth():
+    return generate_auth_url()
 
-@app.route('/token', methods=['POST'])
-def get_token_from_url(full_url):
+def get_token(code):
     '''
     the url we generate here is manually navigated to by the user and then the code is sent back to us by cutting from the search bar.  Not ideal.
     '''
-    code = full_url.split('code=')[1].split('&')[0]
-
     json_response = get_tiktok_auth_token(code)
     access_token = json_response['access_token']
     refresh_token = json_response['refresh_token']
     open_id = json_response['open_id']
 
-    return jsonify({'access_token': access_token, 'refresh_token': refresh_token, 'open_id': open_id})
+    return access_token, refresh_token, open_id
 
 
 if __name__ == "__main__":

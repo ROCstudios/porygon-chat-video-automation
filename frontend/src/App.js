@@ -9,7 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/callback" element={<CallbackHandler />} />
+        <Route path="/redirect" element={<CallbackHandler />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>

@@ -3,6 +3,7 @@ from image_gen import draw_conversation
 from movie_gen import create_video
 from convo_gen import generate_conversation
 from ig_poster import upload_to_instagram
+from oauth import get_auth, get_token
 import os
 import requests
 import secrets
@@ -13,69 +14,36 @@ from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
-
-
-auth_url = 'https://www.tiktok.com/v2/auth/authorize/'
-
-
-def get_tiktok_auth_token(code):
-    '''
-    get the auth token with our endpoint redirect url.
-    '''
-    open_url = 'https://open.tiktokapis.com/v2/oauth/token/'
-    
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cache-Control': 'no-cache'
+CORS(app, resources={
+    r"/*": {
+        "origins": ["http://localhost:3000"],  
+        "methods": ["GET", "POST"],
+        "allow_headers": ["Content-Type", "Authorization"]
     }
-    
-    data = {
-        'client_key': os.getenv('TIKTOK_CLIENT_KEY'),
-        'client_secret': os.getenv('TIKTOK_CLIENT_SECRET'), 
-        'code': code,
-        'grant_type': 'authorization_code',
-        'redirect_uri': os.getenv('TIKTOK_REDIRECT_URI')
-    }
-    
-    response = requests.post(open_url, headers=headers, data=data, timeout=10)
-    return response.json()
+})
 
-def generate_auth_url():
-    '''
-    generate the auth url that we will send to the user to login with
-    '''
-    csrf_token = secrets.token_hex(16)
-    params = {
-        'client_key': os.getenv('TIKTOK_CLIENT_KEY'),
-        'redirect_uri': os.getenv('TIKTOK_REDIRECT_URI'),
-        'response_type': 'code',
-        'scope': 'video.publish',
-        'state': csrf_token
-    }
-    url = auth_url + '?' + urllib.parse.urlencode(params)
-    return url
 
 @app.route('/auth', methods=['GET'])
 def auth():
-    generated_url = generate_auth_url()
-    print(generated_url)
+    generated_url = get_auth()
     return jsonify({'url': generated_url})
 
 @app.route('/token', methods=['POST'])
-def get_token_from_url(full_url):
-    '''
-    the url we generate here is manually navigated to by the user and then the code is sent back to us by cutting from the search bar.  Not ideal.
-    '''
-    code = full_url.split('code=')[1].split('&')[0]
+def get_token_from_url():  # Remove the code parameter
+    try:
+        data = request.get_json()
+        code = data.get('code')
+        
+        if not code:
+            return jsonify({'error': 'Code is required'}), 400
 
-    json_response = get_tiktok_auth_token(code)
-    access_token = json_response['access_token']
-    refresh_token = json_response['refresh_token']
-    open_id = json_response['open_id']
+        access_token, refresh_token, open_id = get_token(code)
 
-    return jsonify({'access_token': access_token, 'refresh_token': refresh_token, 'open_id': open_id})
-
+        return jsonify({
+            'success': access_token is not None and refresh_token is not None and open_id is not None
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/generate', methods=['POST'])
 def generate_video():
@@ -83,7 +51,9 @@ def generate_video():
     data = request.get_json()
     topic = data.get('topic')
     turns = data.get('turns', 5)
+    caption = data.get('caption', f"Conversation about {topic}")
     post_to_ig = data.get('post_to_ig', False)
+    post_to_tiktok = data.get('post_to_tiktok', False)
     
     if not topic:
         return jsonify({'error': 'Topic is required'}), 400
@@ -97,10 +67,16 @@ def generate_video():
         if post_to_ig:
             instagram_url = upload_to_instagram(
                 video_path=temp_video_path,
-                caption=f"AI generated conversation about {topic}"
+                caption=caption
             )
 
-        return_data = send_file(
+        # if post_to_tiktok:
+        #     tiktok_url = upload_to_tiktok(
+        #         video_path=temp_video_path,
+        #         caption=caption
+        #     )
+
+        return_data_ig = send_file(
             temp_video_path,
             mimetype='video/mp4',
             as_attachment=True,
@@ -109,7 +85,7 @@ def generate_video():
 
         if post_to_ig:
             return jsonify({
-                'video': return_data,
+                'video': return_data_ig,
                 'ig_post_url': instagram_url
             })
             
@@ -135,8 +111,10 @@ def main():
     conversation_data = generate_conversation(args.topic, args.turns)
     images_list = draw_conversation(conversation_data)
     video_destination = create_video(images_list)
+    
+    #todo: upload to ig, include parameter to do boolean.
 
 if __name__ == "__main__":
     # Use PORT environment variable for Cloud Run
     port = int(os.environ.get("PORT", 8080))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=True, host='0.0.0.0', port=port, use_reloader=True)
