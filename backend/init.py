@@ -1,10 +1,11 @@
 import os
 import argparse
 from image_gen import draw_conversation
-from movie_gen import create_video, convert_to_9_16_ratio
+from movie_gen import create_video
 from convo_gen import generate_conversation
 from ig_poster import upload_to_instagram
 from cloud_storage import upload_to_gcs
+from tiktok_poster import init_video_upload, upload_video_chunk, check_post_status
 from oauth import get_auth, get_token, get_refresh_token
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, send_file
@@ -71,11 +72,13 @@ def generate_video():
             instagram_url = upload_to_instagram(cloud_video_path, caption)
             print(f"♻️ GENERATE: Instagram URL: {instagram_url}")
 
-        # if post_to_tiktok:
-        #     tiktok_url = upload_to_tiktok(
-        #         video_path=temp_video_path,
-        #         caption=caption
-        #     )
+        if post_to_tiktok:
+          publish_id, upload_url = init_video_upload(access_token, get_video_size(temp_video_path))
+          upload_success = upload_video_chunk(upload_url, temp_video_path)
+          status_response = check_post_status(access_token, publish_id)
+
+        if upload_success and status_response['status'] == 'PUBLISH_COMPLETE':
+            tiktok_url = f"https://www.tiktok.com/@{username}/video/{publish_id}"
 
         return_data_ig = send_file(
             cloud_video_path,
@@ -88,7 +91,8 @@ def generate_video():
         if post_to_ig:
             return_value = jsonify({
                 'video': return_data_ig,
-                'ig_post_url': instagram_url
+                **(({'ig_post_url': instagram_url} if post_to_ig else {})),
+                **(({'tiktok_post_url': tiktok_url} if post_to_tiktok else {}))
             })
             print(f"♻️ GENERATE: return_value: {return_value}")
         
