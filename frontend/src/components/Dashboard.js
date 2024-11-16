@@ -1,9 +1,35 @@
 import React from "react";
-
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
+  const navigate = useNavigate();
+
+  const [topic, setTopic] = useState("");
+  const [caption, setCaption] = useState("");
+  const [postToIg, setPostToIg] = useState(false);
+  const [postToTiktok, setPostToTiktok] = useState(false);
+  const [turns, setTurns] = useState(5);
+  const [loading, setLoading] = useState(false);
 
   const handleGenerate = async () => {
-    console.log("Generating...");
+    if (topic === "" || turns === 0 || turns > 10 || (postToIg === false && postToTiktok === false)) {
+      alert("Please enter valid information");
+      return;
+    } else {
+      try {
+        const response = await axios.post('http://localhost:8080/generate', {
+          topic: topic,
+          turns: turns,
+          caption: caption,
+          post_to_ig: postToIg,
+          post_to_tiktok: postToTiktok
+        });
+      } catch (error) {
+        console.error('Error generating content:', error);
+        alert('Failed to generate content');
+      }
+    }
   };
 
   return (
@@ -48,9 +74,38 @@ const Dashboard = () => {
               Describe your conversation and we'll post it for you and send back the video and links to access it.
             </p>
             <textarea
-              placeholder="Type your idea here..."
-              className="textarea textarea-bordered textarea-lg w-full max-w-lg">
+              placeholder="Type your chat here..."
+              className="textarea textarea-bordered textarea-lg w-full max-w-lg"
+              onChange={(e) => setTopic(e.target.value)}
+            >
             </textarea>
+            <textarea
+              placeholder="Enter a caption for your video..."
+              className="textarea textarea-bordered textarea-lg w-full max-w-lg"
+              onChange={(e) => setCaption(e.target.value)}
+            >
+            </textarea>
+            <div className="flex w-full max-w-lg mb-4">
+              <div className="w-1/2 pr-2">
+                <div className="form-control">
+                  <label className="cursor-pointer label">
+                    <span className="label-text">Post to Instagram</span>
+                    <input type="checkbox" className="checkbox checkbox-primary" />
+                  </label>
+                </div>
+                <div className="form-control">
+                  <label className="cursor-pointer label">
+                    <span className="label-text">Post to TikTok</span>
+                    <input type="checkbox" className="checkbox checkbox-secondary" />
+                  </label>
+                </div>
+              </div>
+              <div className="w-1/2 pl-2">
+                <input type="range" min={0} max="10" value={turns} className="range mt-4" onChange={(e) => setTurns(e.target.value)} />
+                <p>Number of turns: {turns}</p>
+
+              </div>
+            </div>
             <button className="btn btn-primary w-full max-w-lg mt-4" onClick={handleGenerate}>Generate!</button>
           </div>
         </div>

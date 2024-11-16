@@ -58,14 +58,13 @@ def generate_video():
     post_to_tiktok = data.get('post_to_tiktok', False)
     
     if not topic:
-        return jsonify({'error': 'Topic is required'}), 400
+        return jsonify({'error': 'Information is required'}), 400
     
     try:
         conversation_data = generate_conversation(topic, turns)
         images_list = draw_conversation(conversation_data)
         temp_video_path = create_video(images_list)
 
-        
         if post_to_ig:
             instagram_url = upload_to_instagram(
                 video_path=temp_video_path,
