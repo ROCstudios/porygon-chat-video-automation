@@ -1,0 +1,12 @@
+openai
+pillow
+moviepy
+ffmpeg-python
+numpy
+textwrap3
+flask
+python-dotenv
+google-cloud-storage
+flask-cors
+requests
+Pillow

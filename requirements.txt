@@ -1,9 +1,0 @@
-openai
-pillow
-moviepy
-ffmpeg-python
-numpy
-textwrap3
-flask
-python-dotenv
-google-cloud-bucket
