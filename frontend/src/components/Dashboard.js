@@ -13,10 +13,16 @@ const Dashboard = () => {
   const [postToTiktok, setPostToTiktok] = useState(false);
   const [turns, setTurns] = useState(5);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const [igPostUrl, setIgPostUrl] = useState(null);
+  const [tiktokPostUrl, setTiktokPostUrl] = useState(null);
+  const [cloudUrl, setCloudUrl] = useState(null);
 
   const handleGenerate = async () => {
+    setError(null);
     if (topic === "" || turns === 0 || turns > 10 || (postToIg === false && postToTiktok === false)) {
-      alert("Please enter valid information");
+      setError("Please enter valid information");
       return;
     } else {
       setLoading(true);
@@ -29,10 +35,19 @@ const Dashboard = () => {
           post_to_tiktok: postToTiktok,
           tiktok_access_token: tiktokGetToken()
         });
-        console.log('🚀 ~ file: Dashboard.js:33 ~ handleGenerate ~ response:', response);
+        console.log('🚀 ~ file: Dashboard.js:34 ~ handleGenerate ~ response:', response.data);
+
+        if (response.data.status === 'success') {
+          setCloudUrl(response.data.cloud_url);
+          setIgPostUrl(response.data.ig_post_url);
+          setTiktokPostUrl(response.data.tiktok_post_url);
+
+          document.getElementById('winning_modal').showModal()
+        }
+        
       } catch (error) {
         console.error('Error generating content:', error);
-        alert('Failed to generate content');
+        setError("Error: " + error.response.data.error);
       } finally {
         setLoading(false);
       }
@@ -41,6 +56,34 @@ const Dashboard = () => {
 
   return (
     <div>
+      {/* Open the modal using document.getElementById('ID').showModal() method */}
+      <dialog id="winning_modal" className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Your video is ready!</h3>
+          <div className="flex justify-between gap-4 py-4">
+            {igPostUrl && (
+              <a href={igPostUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary flex-1">
+                Instagram
+              </a>
+            )}
+            {tiktokPostUrl && (
+              <a href={tiktokPostUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary flex-1">
+                TikTok
+              </a>
+            )}
+            {cloudUrl && (
+              <a href={cloudUrl} target="_blank" rel="noopener noreferrer" className="btn btn-accent flex-1">
+                Video
+              </a>
+            )}
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
       <div className="navbar bg-base-100">
         <div className="navbar-start">
           <div className="dropdown">
@@ -73,6 +116,20 @@ const Dashboard = () => {
         <div className="navbar-end">
         </div>
       </div>
+      {error && <div role="alert" className="alert alert-error">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 shrink-0 stroke-current"
+          fill="none"
+          viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{error}</span>
+      </div>}
       <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content text-center">
           {loading ? (

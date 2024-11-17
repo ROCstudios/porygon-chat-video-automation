@@ -54,6 +54,10 @@ def refresh_token():
 
 @app.route('/generate', methods=['POST'])
 def generate_video():
+    instagram_url = None
+    tiktok_url = None
+    cloud_video_path = None
+    
     data = request.get_json()
     topic = data.get('topic')
     turns = data.get('turns', 5)
@@ -63,14 +67,19 @@ def generate_video():
     tiktok_access_token = data.get('tiktok_access_token')
     print(f"tiktotken {tiktok_access_token}")
 
-    
+    # #! test code
+    # post_to_ig = False
+    # post_to_tiktok = False
+    # tiktok_url = 'https://www.tiktok.com/@amohnjaca3y/video/7438099189084523831'
+    # instagram_url = 'https://www.instagram.com/p/DCcFSiQJAFS/'
+    # cloud_video_path = 'https://storage.googleapis.com/porygon-video-generation_cloudbuild/reels/20241117_115445_tmp5bap7mia.mp4'
+    # #! end
+
     if not topic:
         return jsonify({'error': 'Information is required'}), 400
     
     try:
-        instagram_url = None
-        tiktok_url = None
-        # conversation_data = generate_conversation(topic, turns)
+        conversation_data = generate_conversation(topic, turns)
         conversation_data = [{'speaker': 'Person 1', 'message': 'Do you believe in love at first sight?', 'timestamp': '11:00 AM'}, {'speaker': 'Person 2', 'message': 'Yes, I think it can happen.', 'timestamp': '11:02 AM'}, {'speaker': 'Person 1', 'message': "That's interesting. I feel the same way.", 'timestamp': '11:04 AM'}, {'speaker': 'Person 2', 'message': "It's a beautiful thing, isn't it?", 'timestamp': '11:06 AM'}, {'speaker': 'Person 1', 'message': 'Yes, it surely is.', 'timestamp': '11:08 AM'}]
         images_list = draw_conversation(conversation_data)
         temp_video_path = create_video(images_list)
@@ -88,26 +97,13 @@ def generate_video():
           upload_success = upload_video_chunk(upload_url, temp_video_path)
           status_response = check_post_status(tiktok_access_token, publish_id)
 
-        #   tiktok_url = f"https://www.tiktok.com/@{username}/video/{publish_id}"
-
-
-        return_video_file = send_file(
-            temp_video_path,
-            mimetype='video/mp4',
-            as_attachment=True,
-            download_name=f'conversation_{topic}.mp4'
-        )
-        print(f"♻️ GENERATE: return_data: {return_video_file}")
-
-        if post_to_ig:
-            return_value = jsonify({
-                'video': return_video_file,
-                **(({'ig_post_url': instagram_url} if post_to_ig else {})),
-                **(({'tiktok_post_url': tiktok_url} if post_to_tiktok else {}))
-            })
-            print(f"♻️ GENERATE: return_value: {return_value}")
-        
-        return return_value
+        response = jsonify({
+            'status': 'success',
+            'cloud_url': cloud_video_path,
+            'ig_post_url': instagram_url,
+            'tiktok_post_url': tiktok_url
+        })
+        return response
         
     except Exception as e:
         print('🚩 ~ file: init.py:113 ~ e:', e);
