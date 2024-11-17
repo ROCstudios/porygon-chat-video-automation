@@ -7,16 +7,16 @@ import { igGetToken, tiktokGetToken } from "../util/TokenService";
 const Dashboard = () => {
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const [topic, setTopic] = useState("");
   const [caption, setCaption] = useState("");
   const [postToIg, setPostToIg] = useState(false);
   const [postToTiktok, setPostToTiktok] = useState(false);
   const [turns, setTurns] = useState(5);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [name, setName] = useState("");
 
-  const [igPostUrl, setIgPostUrl] = useState(null);
-  const [tiktokPostUrl, setTiktokPostUrl] = useState(null);
   const [cloudUrl, setCloudUrl] = useState(null);
 
   const handleGenerate = async () => {
@@ -33,14 +33,13 @@ const Dashboard = () => {
           caption: caption,
           post_to_ig: postToIg,
           post_to_tiktok: postToTiktok,
-          tiktok_access_token: tiktokGetToken()
+          tiktok_access_token: tiktokGetToken(),
+          name: name
         });
         console.log('🚀 ~ file: Dashboard.js:34 ~ handleGenerate ~ response:', response.data);
 
         if (response.data.status === 'success') {
           setCloudUrl(response.data.cloud_url);
-          setIgPostUrl(response.data.ig_post_url);
-          setTiktokPostUrl(response.data.tiktok_post_url);
 
           document.getElementById('winning_modal').showModal()
         }
@@ -60,20 +59,10 @@ const Dashboard = () => {
       <dialog id="winning_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Your video is ready!</h3>
-          <div className="flex justify-between gap-4 py-4">
-            {igPostUrl && (
-              <a href={igPostUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary flex-1">
-                Instagram
-              </a>
-            )}
-            {tiktokPostUrl && (
-              <a href={tiktokPostUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary flex-1">
-                TikTok
-              </a>
-            )}
+          <div className="py-4">
             {cloudUrl && (
-              <a href={cloudUrl} target="_blank" rel="noopener noreferrer" className="btn btn-accent flex-1">
-                Video
+              <a href={cloudUrl} target="_blank" rel="noopener noreferrer" className="btn btn-accent w-full">
+                View your video now.
               </a>
             )}
           </div>
@@ -104,9 +93,9 @@ const Dashboard = () => {
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-              <li><a>Homepage</a></li>
-              <li><a>Portfolio</a></li>
-              <li><a>About</a></li>
+              <li><a href="/">Login</a></li>
+              <li><a href="/redirect">Callback Handler</a></li>
+              <li><a href="/dashboard">Dashboard</a></li>
             </ul>
           </div>
         </div>
@@ -139,27 +128,51 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="max-w-lg">
-              <h1 className="text-5xl font-bold">Enter Your Chat</h1>
+              <h1 className="text-5xl font-bold">Let's Get This Chat Party Started! 🎉</h1>
             <p className="py-6">
               Describe your conversation and we'll post it for you and send back the video and links to access it.
             </p>
-            <textarea
-              placeholder="Type your chat here..."
-              className="textarea textarea-bordered textarea-lg w-full max-w-lg"
-              onChange={(e) => setTopic(e.target.value)}
-            >
-            </textarea>
-            <textarea
-              placeholder="Enter a caption for your video..."
-              className="textarea textarea-bordered textarea-lg w-full max-w-lg"
-              onChange={(e) => setCaption(e.target.value)}
-            >
-            </textarea>
+            <label>
+              <div className="label">
+                <span className="label-text">Name that appears above the chat bubbles</span>
+              </div>
+              <input
+                type="text"
+                placeholder="Type the name here..."
+                className="input input-bordered input-md w-full max-w-lg"
+                onChange={(e) => setName(e.target.value)}
+                />
+            </label>
+            <label>
+              <div className="label">
+                <span className="label-text">Topic of the conversation that AI will generate</span>
+              </div>
+              <textarea
+                placeholder="Type your chat here..."
+                className="textarea textarea-bordered textarea-lg w-full max-w-lg"
+                onChange={(e) => setTopic(e.target.value)}
+                >
+              </textarea>
+            </label>
+            <label>
+              <div className="label">
+                <span className="label-text">Caption for your video</span>
+              </div>
+              <textarea
+                placeholder="Enter a caption for your video..."
+                className="textarea textarea-bordered textarea-lg w-full max-w-lg"
+                onChange={(e) => setCaption(e.target.value)}
+                >
+              </textarea>
+            </label>
             <div className="flex w-full max-w-lg mb-4">
               <div className="w-1/2 pr-2">
                 <div className="form-control">
+                    <div className="label">
+                      <span className="label-text">Where we'll post your video</span>
+                    </div>
                   <label className="cursor-pointer label">
-                    <span className="label-text">Post to Instagram</span>
+                    <span className="label-text font-bold">Post to Instagram</span>
                     <input 
                       type="checkbox" 
                       className="checkbox checkbox-primary"
@@ -170,7 +183,7 @@ const Dashboard = () => {
                 </div>
                 <div className="form-control">
                   <label className="cursor-pointer label">
-                    <span className="label-text">Post to TikTok</span>
+                    <span className="label-text font-bold">Post to TikTok</span>
                     <input 
                       type="checkbox" 
                       className="checkbox checkbox-secondary"
@@ -181,8 +194,11 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="w-1/2 pl-2">
-                <input type="range" min={0} max="5" value={turns} className="range mt-4" onChange={(e) => setTurns(e.target.value)} />
-                <p>Number of turns: {turns}</p>
+                <div className="label">
+                    <span className="label-text">Number of chat bubbles</span>
+                  </div>
+                <input type="range" min={0} max="10" value={turns} className="range mt-4" onChange={(e) => setTurns(e.target.value)} />
+                <p className="font-bold">Number of turns: {turns}</p>
               </div>
             </div>
               <button className="btn btn-primary w-full max-w-lg mt-4" onClick={handleGenerate}>Generate!</button>

@@ -5,7 +5,7 @@ import time
 def get_video_size(video_path):
     return os.path.getsize(video_path)
 
-def init_video_upload(access_token, video_path):
+def init_video_upload(access_token, video_path, caption):
     chunk_size = 10000000
     video_size = get_video_size(video_path)
     print('🚀 ~ file: tiktok_poster.py:50 ~ init_video_upload ~ access_token, video_size, chunk_size:', access_token, video_size, chunk_size);
@@ -30,7 +30,7 @@ def init_video_upload(access_token, video_path):
     
     data = {
         "post_info": {
-            "title": "this will be a funny #cat video on your @tiktok #fyp",
+            "title": caption,
             "privacy_level": "SELF_ONLY", 
             "disable_duet": False,
             "disable_comment": True,

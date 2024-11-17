@@ -16,7 +16,7 @@ action_bar_text = "Steven"  # Or whatever title you want
 action_bar_text_color = "black"
 action_bar_padding = 10
 icon_size = (40, 40)
-icon_path = "profile.png"
+icon_path = "backend/profile.png"
 
 # Font settings
 # font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"  # Replace with your font path
@@ -31,7 +31,7 @@ icon_path = "profile.png"
 img = Image.new("RGB", (width, height), color=background_color)
 draw = ImageDraw.Draw(img)
 
-def draw_action_bar(draw):
+def draw_action_bar(draw, name):
     print("✍️ DRAW ACTION BAR: Drawing action bar")
     draw.rectangle(
         [(0, 0), (width, action_bar_height)],
@@ -58,7 +58,7 @@ def draw_action_bar(draw):
         text_start_x = action_bar_padding
     
     # Draw the action bar text
-    text_bbox = draw.textbbox((0, 0), action_bar_text)
+    text_bbox = draw.textbbox((0, 0), name)
     text_height = text_bbox[3] - text_bbox[1]
     text_y = (action_bar_height - text_height) // 2  # Vertically center
     
@@ -69,7 +69,7 @@ def draw_action_bar(draw):
     )
 
 # Function to draw a chat bubble
-def draw_bubble(draw, text, sender=True, timestamp="", status=None, y_position=0):
+def draw_bubble(draw, text, sender=True, timestamp="", status=None, y_position=0, name="Siri"):
     print(f"✍️ DRAW BUBBLE: Drawing bubble with text: {text}")
 
     # Determine bubble size
@@ -88,7 +88,7 @@ def draw_bubble(draw, text, sender=True, timestamp="", status=None, y_position=0
     bubble_color = sender_color if sender else receiver_color
 
     #action bar
-    draw_action_bar(draw)
+    draw_action_bar(draw, name)
 
     # Draw bubble
     draw.rounded_rectangle((x_position, y_position, x_position + bubble_width, y_position + bubble_height), radius=15, fill=bubble_color)
@@ -109,7 +109,7 @@ def draw_bubble(draw, text, sender=True, timestamp="", status=None, y_position=0
     return y_position + bubble_height + 20
 
 # Draw the chat conversation
-def draw_conversation(conversation_data):
+def draw_conversation(conversation_data, name):
   print(f"✍️ DRAW CONVERSATION: Drawing conversation with {len(conversation_data)} turns")
 
   images_list = []
@@ -130,7 +130,8 @@ def draw_conversation(conversation_data):
               item["message"], 
               sender=sender, 
               timestamp=item["timestamp"], 
-              y_position=current_y
+              y_position=current_y,
+              name=name
           )
           
       images_list.append(in_img)
