@@ -12,16 +12,18 @@ def save_with_temp_file(video_file, fps):
     return temp_path
 
 def create_video(images_list):
-    print(f"🎥 CREATE VIDEO: Creating video with {len(images_list)} images")
+    print('📸 ~ file: movie_gen.py:15 ~ images_list:', len(images_list));
     numpy_images = [np.array(img) for img in images_list]
-    fps = 1  
-    duration = len(images_list) / fps
+    fps = 30 
+    # Duplicate each image to maintain the 1 second duration for each image
+    numpy_images = [img for img in numpy_images for _ in range(fps)]
+    duration = len(images_list)
 
     clip = ImageSequenceClip(numpy_images, fps=fps)
     clip = clip.set_duration(duration)
     
     temp_path = save_with_temp_file(clip, fps)
-    print(f"🎥 CREATE VIDEO: Video created at {temp_path}")
+    print('📸 ~ file: movie_gen.py:24 ~ temp_path:', temp_path);
     
     return temp_path
 

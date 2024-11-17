@@ -74,7 +74,9 @@ def generate_video():
         conversation_data = [{'speaker': 'Person 1', 'message': 'Do you believe in love at first sight?', 'timestamp': '11:00 AM'}, {'speaker': 'Person 2', 'message': 'Yes, I think it can happen.', 'timestamp': '11:02 AM'}, {'speaker': 'Person 1', 'message': "That's interesting. I feel the same way.", 'timestamp': '11:04 AM'}, {'speaker': 'Person 2', 'message': "It's a beautiful thing, isn't it?", 'timestamp': '11:06 AM'}, {'speaker': 'Person 1', 'message': 'Yes, it surely is.', 'timestamp': '11:08 AM'}]
         images_list = draw_conversation(conversation_data)
         temp_video_path = create_video(images_list)
+        print('🚀 ~ file: init.py:77 ~ temp_video_path:', temp_video_path);
         cloud_video_path = upload_to_gcs(temp_video_path)
+        print('🚀 ~ file: init.py:79 ~ cloud_video_path:', cloud_video_path);
 
         if post_to_ig:
             instagram_url = upload_to_instagram(cloud_video_path, caption)
@@ -82,6 +84,7 @@ def generate_video():
 
         if post_to_tiktok:
           publish_id, upload_url = init_video_upload(tiktok_access_token, temp_video_path)
+          print('🚀 ~ file: init.py:87 ~ publish_id, upload_url:', publish_id, upload_url);
           upload_success = upload_video_chunk(upload_url, temp_video_path)
           status_response = check_post_status(tiktok_access_token, publish_id)
 
@@ -107,7 +110,7 @@ def generate_video():
         return return_value
         
     except Exception as e:
-        print(f"🚨 GENERATE: Error: {e}")
+        print(f"🚨 Error: {e}")
         return jsonify({'error': str(e)}), 500
         # # Clean up the temp file if there's an error
         # if 'temp_video_path' in locals():

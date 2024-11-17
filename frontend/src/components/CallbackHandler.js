@@ -21,7 +21,6 @@ const CallbackHandler = () => {
             // code,
             code: 'cXf_XwR0YbyVRy3eMXZQjyWhws0ebSRsInyXtQOnJ9uiq9kERQTj01J65BtUAHIGKAgdc7l2qn7QtLME6zzVTQolaYbavRUq73TEAFoQkrdJlsp4gFTwwtVNP5l5OcCv8avQb6QqHIZ75ykJwfpKLGQ_Vutjzh-nV8yuoa9AOBmb87t3STvqg0bPFepHFFn_%2A3%216345.va'
           });
-          console.log('🚀 ~ file: CallbackHandler.js:26 ~ handleCallback ~ response:', response);
           if (response.status === 200) {
             tiktokSaveToken(response.data.access_token);
             tiktokSaveRefreshToken(response.data.refresh_token);

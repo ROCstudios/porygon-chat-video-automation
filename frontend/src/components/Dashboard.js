@@ -21,16 +21,15 @@ const Dashboard = () => {
     } else {
       setLoading(true);
       try {
-        console.log(tiktokGetToken())
-        // const response = await axios.post('http://localhost:8080/generate', {
-        //   topic: topic,
-        //   turns: turns,
-        //   caption: caption,
-        //   post_to_ig: postToIg,
-        //   post_to_tiktok: postToTiktok,
-        //   tiktok_access_token: tiktokGetToken()
-        // });
-        // console.log(response);
+        const response = await axios.post('http://localhost:8080/generate', {
+          topic: topic,
+          turns: turns,
+          caption: caption,
+          post_to_ig: postToIg,
+          post_to_tiktok: postToTiktok,
+          tiktok_access_token: tiktokGetToken()
+        });
+        console.log('🚀 ~ file: Dashboard.js:33 ~ handleGenerate ~ response:', response);
       } catch (error) {
         console.error('Error generating content:', error);
         alert('Failed to generate content');
