@@ -91,17 +91,17 @@ def generate_video():
         #   tiktok_url = f"https://www.tiktok.com/@{username}/video/{publish_id}"
 
 
-        return_data_ig = send_file(
-            cloud_video_path,
+        return_video_file = send_file(
+            temp_video_path,
             mimetype='video/mp4',
             as_attachment=True,
             download_name=f'conversation_{topic}.mp4'
         )
-        print(f"♻️ GENERATE: return_data_ig: {return_data_ig}")
+        print(f"♻️ GENERATE: return_data: {return_video_file}")
 
         if post_to_ig:
             return_value = jsonify({
-                'video': return_data_ig,
+                'video': return_video_file,
                 **(({'ig_post_url': instagram_url} if post_to_ig else {})),
                 **(({'tiktok_post_url': tiktok_url} if post_to_tiktok else {}))
             })
@@ -110,15 +110,14 @@ def generate_video():
         return return_value
         
     except Exception as e:
-        print(f"🚨 Error: {e}")
+        print('🚩 ~ file: init.py:113 ~ e:', e);
+        # Clean up the temp file if there's an error
+        if 'temp_video_path' in locals():
+            try:
+                os.remove(temp_video_path)
+            except:
+                pass
         return jsonify({'error': str(e)}), 500
-        # # Clean up the temp file if there's an error
-        # if 'temp_video_path' in locals():
-        #     try:
-        #         os.remove(temp_video_path)
-        #     except:
-        #         pass
-        # return jsonify({'error': str(e)}), 500
 
 def main():
     parser = argparse.ArgumentParser(description='Generate conversation videos')

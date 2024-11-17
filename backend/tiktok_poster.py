@@ -100,7 +100,7 @@ def check_post_status(access_token, publish_id, max_attempts=30):
             print(f"🔥 Upload failed. Reason: {response_json['data'].get('fail_reason')}")
             return response_json
         elif status == 'PUBLISH_COMPLETE':
-            print("🔥 Upload completed successfully!")
+            print("✅ Upload completed successfully!")
             return response_json
         elif status in ['PROCESSING_UPLOAD', 'PROCESSING_DOWNLOAD', 'SEND_TO_USER_INBOX']:
             print(f"🔥 Status: {status}. Uploaded bytes: {response_json['data'].get('uploaded_bytes', 0)}")
