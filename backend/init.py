@@ -1,6 +1,6 @@
 import os
 import argparse
-from image_gen import draw_conversation
+from image_gen import draw_conversation, verify_assets
 from movie_gen import create_video
 from convo_gen import generate_conversation
 from ig_poster import upload_to_instagram
@@ -26,6 +26,13 @@ def create_app(config_name='default'):
     load_dotenv()
     config_name = os.environ.get('FLASK_ENV', 'default')
     app.config.from_object(config[config_name])
+
+    try:
+        verify_assets()
+        print("✅ All required assets verified")
+    except Exception as e:
+        print(f"❌ Asset verification failed: {str(e)}")
+
     return app
 
 app = create_app()
@@ -130,15 +137,14 @@ def main():
     parser = argparse.ArgumentParser(description='Generate conversation videos')
     parser.add_argument('--topic', type=str, required=True, help='Topic for the conversation')
     parser.add_argument('--turns', type=int, default=5, help='Number of conversation turns (default: 5)')
-    
+    parser.add_argument('--name', type=str, required=True, help='Name of the person in the conversation')
+
     # Parse arguments
     args = parser.parse_args()
 
-    conversation_data = generate_conversation(args.topic, args.turns)
-    images_list = draw_conversation(conversation_data)
-    video_destination = create_video(images_list)
-    
-    #todo: upload to ig, include parameter to do boolean.
+    # conversation_data = generate_conversation(args.topic, args.turns)
+    # images_list = draw_conversation(conversation_data, args.name)
+    # video_destination = create_video(images_list)
 
 if __name__ == "__main__":
     # Use PORT environment variable for Cloud Run

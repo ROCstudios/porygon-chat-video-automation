@@ -1,5 +1,11 @@
+
 from PIL import Image, ImageDraw, ImageFont
 import textwrap
+import os
+
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+ASSETS_DIR = os.path.join(BACKEND_DIR, 'assets')
+icon_path = os.path.join(ASSETS_DIR, 'profile.png')
 
 # Parameters for the chat image
 width, height = 540, 960
@@ -13,9 +19,9 @@ date_divider_color = "orange"
 action_bar_height = 80  # Height of the top bar
 action_bar_color = "black"
 action_bar_text_color = "white"
+action_bar_text_size = 22
 action_bar_padding = 10
 icon_size = (40, 40)
-icon_path = "backend/profile.png"
 
 # Font settings
 # font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"  # Replace with your font path
@@ -30,45 +36,67 @@ timestamp_font = ImageFont.load_default().font_variant(size=timestamp_font_size)
 img = Image.new("RGB", (width, height), color=background_color)
 draw = ImageDraw.Draw(img)
 
-def draw_action_bar(draw, name):
+def verify_assets():
+    """Verify that all required assets are available."""
+    required_assets = ['profile.png']
+    
+    for asset in required_assets:
+        asset_path = os.path.join(ASSETS_DIR, asset)
+        if not os.path.exists(asset_path):
+            raise FileNotFoundError(
+                f"Required asset not found: {asset_path}\n"
+                f"Please ensure all assets are in the {ASSETS_DIR} directory."
+            )
+
+
+def draw_action_bar(draw, img,name):
     print("✍️ DRAW ACTION BAR: Drawing action bar")
     draw.rectangle(
         [(0, 0), (width, action_bar_height)],
         fill=action_bar_color
     )
     
-    # Add the icon
+    # Add the icon with better error handling
     try:
+        if not os.path.exists(icon_path):
+            print(f"❌ Icon not found at: {icon_path}")
+            raise FileNotFoundError(f"Icon not found at: {icon_path}")
+            
         icon = Image.open(icon_path)
+        print("✅ Successfully loaded icon")
+        
         # Resize icon while maintaining aspect ratio
         icon.thumbnail(icon_size)
         # Calculate vertical position to center the icon
         icon_y = (action_bar_height - icon.height) // 2
+        
         # Paste the icon (handles transparency if PNG)
         if icon.mode == 'RGBA':
             img.paste(icon, (action_bar_padding, icon_y), icon)
         else:
             img.paste(icon, (action_bar_padding, icon_y))
             
-        # Calculate text position after icon
         text_start_x = action_bar_padding + icon_size[0] + action_bar_padding
-    except FileNotFoundError:
-        # If no icon is found, start text from the left padding
+        
+    except Exception as e:
+        print(f"❌ Error loading icon: {str(e)}")
+        # Fallback: start text from the left padding if icon fails
         text_start_x = action_bar_padding
     
     # Draw the action bar text
-    text_bbox = draw.textbbox((0, 0), name)
+    text_bbox = draw.textbbox((0, 0), name, font=ImageFont.load_default().font_variant(size=action_bar_text_size))
     text_height = text_bbox[3] - text_bbox[1]
     text_y = (action_bar_height - text_height) // 2  # Vertically center
     
     draw.text(
         (text_start_x, text_y),
         name,
-        fill=action_bar_text_color
+        fill=action_bar_text_color,
+        font=ImageFont.load_default().font_variant(size=action_bar_text_size)
     )
 
 # Function to draw a chat bubble
-def draw_bubble(draw, text, sender=True, timestamp="", status=None, y_position=0, name="Siri"):
+def draw_bubble(draw, img, text, sender=True, timestamp="", status=None, y_position=0, name="Siri"):
     padding = 20
 
     # Determine bubble size
@@ -88,7 +116,7 @@ def draw_bubble(draw, text, sender=True, timestamp="", status=None, y_position=0
     bubble_color = sender_color if sender else receiver_color
 
     #action bar
-    draw_action_bar(draw, name)
+    draw_action_bar(draw, img, name)
 
     # Draw bubble
     draw.rounded_rectangle(
@@ -150,6 +178,7 @@ def draw_conversation(conversation_data, name):
           sender = item["speaker"] == "Person 1"
           current_y = draw_bubble(
               in_draw, 
+              in_img,
               item["message"], 
               sender=sender, 
               timestamp=item["timestamp"], 
