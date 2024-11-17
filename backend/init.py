@@ -12,20 +12,16 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 
-from config import config
 
 def create_app(config_name='default'):
     app = Flask(__name__)
     CORS(app, resources={
         r"/*": {
-            "origins": ["http://localhost:3000"],  
+            "origins": ["http://localhost:3000", "https://porygon-video-generation.web.app", "https://tiktok.oligarchventures.com"],  
             "methods": ["GET", "POST"],
             "allow_headers": ["Content-Type", "Authorization"]
         }
     })
-    load_dotenv()
-    config_name = os.environ.get('FLASK_ENV', 'default')
-    app.config.from_object(config[config_name])
 
     try:
         verify_assets()

@@ -1,9 +1,10 @@
-import os
 import requests
 import secrets
 import urllib
 from flask import Flask, jsonify
 from flask_cors import CORS
+
+from config import configer
 
 app = Flask(__name__)
 CORS(app)
@@ -16,8 +17,8 @@ def get_refresh_token(refresh_token):
             return jsonify({'error': 'Refresh token is required'}), 400
 
         # Get client credentials from environment
-        client_key = os.getenv('TIKTOK_CLIENT_KEY')
-        client_secret = os.getenv('TIKTOK_CLIENT_SECRET')
+        client_key = configer['TIKTOK_CLIENT_KEY']
+        client_secret = configer['TIKTOK_CLIENT_SECRET']
 
         # Prepare request data
         data = {
@@ -72,11 +73,11 @@ def get_tiktok_auth_token(code):
     }
     
     data = {
-        'client_key': os.getenv('TIKTOK_CLIENT_KEY'),
-        'client_secret': os.getenv('TIKTOK_CLIENT_SECRET'), 
+        'client_key': configer['TIKTOK_CLIENT_KEY'],
+        'client_secret': configer['TIKTOK_CLIENT_SECRET'], 
         'code': code,
         'grant_type': 'authorization_code',
-        'redirect_uri': os.getenv('TIKTOK_REDIRECT_URI')
+        'redirect_uri': configer['TIKTOK_REDIRECT_URI']
     }
     
     response = requests.post(open_url, headers=headers, data=data, timeout=10)
@@ -89,8 +90,8 @@ def generate_auth_url():
     '''
     csrf_token = secrets.token_hex(16)
     params = {
-        'client_key': os.getenv('TIKTOK_CLIENT_KEY'),
-        'redirect_uri': os.getenv('TIKTOK_REDIRECT_URI'),
+        'client_key': configer['TIKTOK_CLIENT_KEY'],
+        'redirect_uri': configer['TIKTOK_REDIRECT_URI'],
         'response_type': 'code',
         'scope': 'video.publish',
         'state': csrf_token

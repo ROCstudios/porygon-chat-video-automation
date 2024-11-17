@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { igGetToken, tiktokGetToken } from "../util/TokenService";
 
+
 const Dashboard = () => {
   const navigate = useNavigate();
 
@@ -27,7 +28,7 @@ const Dashboard = () => {
     } else {
       setLoading(true);
       try {
-        const response = await axios.post('http://localhost:8080/generate', {
+        const response = await axios.post(`${process.env.BACKEND_URL}/generate`, {
           topic: topic,
           turns: turns,
           caption: caption,
@@ -106,19 +107,20 @@ const Dashboard = () => {
         </div>
       </div>
       {error && <div role="alert" className="alert alert-error">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 shrink-0 stroke-current"
-          fill="none"
-          viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span>{error}</span>
-      </div>}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{error}</span>
+        </div>
+      }
       <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content text-center">
           {loading ? (

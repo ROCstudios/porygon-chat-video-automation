@@ -205,7 +205,7 @@ steps:
 Monitor the build:
 ```
 # View logs
-gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=chat-image-generator" --limit 50
+gcloud beta logging tail
 
 # View service details
 gcloud run services describe chat-image-generator --platform managed --region us-**central1**

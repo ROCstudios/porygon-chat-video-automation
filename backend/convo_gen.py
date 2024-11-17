@@ -3,8 +3,9 @@ import os
 from datetime import datetime, timedelta
 import openai
 
+from config import configer
 # Set up your OpenAI API key
-openai.api_key = os.getenv('OPENAI_API_KEY')
+openai.api_key = configer['OPENAI_API_KEY']
 
 #Prompts
 system_prompt = """

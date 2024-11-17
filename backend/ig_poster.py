@@ -1,16 +1,15 @@
 import requests
 import os
-import dotenv
+from config import configer
 import time
 from datetime import datetime, timedelta
 
-dotenv.load_dotenv()
 
 
 def upload_to_instagram(public_url, caption):
     print(f"📧 UPLOAD TO INSTAGRAM: Uploading video to Instagram with caption: {caption}")
 
-    access_token = os.getenv('INSTAGRAM_TOKEN')
+    access_token = configer['INSTAGRAM_TOKEN']
     print(f"📧 UPLOAD TO INSTAGRAM: Access token: {access_token}")
 
     # Step 0: Get Instagram Business Account ID

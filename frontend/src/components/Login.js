@@ -2,9 +2,12 @@ import React from "react";
 import axios from "axios";
 import { igSaveToken, igSetToken, getRefreshToken, igSaveRefreshToken } from "../util/TokenService";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import config from "../config";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [simpleText, setSimpleText] = useState("");
 
   const handleLogin = async () => {
 
@@ -12,20 +15,21 @@ const Login = () => {
     // Instagram can be automated but we'll need  a more explicit approach since TikTok expires quickly
     // Research their docs.
 
-    const response = await axios.get("http://localhost:8080/tiktokauth");
+    const response = await axios.get(`${config.backendUrl}/tiktokauth`);
     const authUrl = response.data.url;
-    window.location.href = authUrl; 
+    setSimpleText(authUrl);
+    // window.location.href = authUrl; 
 
     // ! Deprecated this needs to be improved
     // if (getRefreshToken() !== null && getRefreshToken() !== "") {
-      // const response = await axios.post("http://localhost:8080/refresh", {
+      // const response = await axios.post("process.env.BACKEND_URL/refresh", {
       //   refresh_token: getRefreshToken(),
       // });
       // igSaveToken(response.data.access_token);
       // igSaveRefreshToken(response.data.refresh_token);
       // navigate("/dashboard");
     // } else {
-    //   const response = await axios.get("http://localhost:8080/tiktokauth");
+    //   const response = await axios.get("process.env.BACKEND_URL/tiktokauth");
     //   const authUrl = response.data.url;
     //   window.location.href = authUrl; 
     // }
@@ -66,6 +70,21 @@ const Login = () => {
         <div className="navbar-end">
         </div>
       </div>
+      {simpleText && <div role="alert" className="alert alert-error">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{simpleText}</span>
+        </div>
+      }
       <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content text-center">
           <div className="max-w-md">

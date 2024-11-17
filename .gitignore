@@ -13,3 +13,5 @@ node_modules
 __pycache__
 frontend/.firebaserc/
 frontend/.firebase/hosting.YnVpbGQ.cache
+frontend/.env.staging
+frontend/.env.development
