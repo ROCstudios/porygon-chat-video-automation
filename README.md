@@ -132,3 +132,81 @@ In the root of the project with the following names (case sensitive):
 
 ![Roc - Upwork Agency Banner](https://github.com/user-attachments/assets/79467e15-71b8-44ed-be35-d69701179169)
 
+
+### Deploying to GCP with Docker
+
+
+```
+docker build -t gcr.io/porygon-video-generation/chat-image-generator .
+docker push gcr.io/porygon-video-generation/chat-image-generator
+
+# Deploy to Cloud Run
+gcloud run deploy chat-image-generator \
+  --image gcr.io/porygon-video-generation/chat-image-generator \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated
+
+  # Test deployment
+  # Get service url
+  gcloud run services describe chat-image-generator --platform managed --region us-central1 --format 'value(status.url)'
+
+  curl -X GET \ 
+  -H "Content-Type: application/json" \
+  https://chat-image-generator-p22cordwkq-uc.a.run.app/tiktokauth
+```
+
+### Additional steps for more fine-toothed deployment
+
+For local testing:
+```
+# Build locally
+docker build -t chat-image-generator ./backend
+
+# Run locally
+docker run -p 8080:8080 chat-image-generator
+```
+
+Add environment variables in Cloud Run (if needed):
+```
+gcloud run services update chat-image-generator \
+  --platform managed \
+  --region us-central1 \
+  --set-env-vars "KEY=value"
+```
+
+Set up continuous deployment (optional):
+Create a cloudbuild.yaml file:
+```
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/chat-image-generator', './backend']
+  
+  # Push the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/chat-image-generator']
+  
+  # Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'chat-image-generator'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/chat-image-generator'
+      - '--platform'
+      - 'managed'
+      - '--region'
+      - 'us-central1'
+      - '--allow-unauthenticated'
+```
+
+Monitor the build:
+```
+# View logs
+gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=chat-image-generator" --limit 50
+
+# View service details
+gcloud run services describe chat-image-generator --platform managed --region us-**central1**
+```

@@ -11,3 +11,4 @@ google-cloud-storage
 flask-cors
 requests
 Pillow
+gunicorn

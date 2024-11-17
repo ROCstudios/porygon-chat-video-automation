@@ -1,20 +1,32 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8-slim
+# Use Python 3.9 slim image
+FROM python:3.9-slim
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy requirements first for better caching
+COPY requirements.txt .
 
-# Install any needed packages specified in requirements.txt
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apt-get update && apt-get install -y ffmpeg
-# Set environment variable for the port
-ENV PORT 8080
 
-# Expose the port
+# Copy the rest of the application
+COPY . .
+
+# Create assets directory
+RUN mkdir -p /app/assets
+
+# Copy assets
+COPY assets/* /app/assets/
+
+# Verify assets exist after copying
+RUN python -c "from image_gen import verify_assets; verify_assets()"
+
+# Set environment variables
+ENV PORT=8080
+
+# Expose port
 EXPOSE 8080
 
-# Run main.py when the container launches
+# Run the application
 CMD ["python", "init.py"]
