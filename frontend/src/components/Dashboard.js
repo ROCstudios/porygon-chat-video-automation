@@ -61,7 +61,7 @@ const Dashboard = () => {
           <h3 className="font-bold text-lg">Your video is ready!</h3>
           <div className="py-4">
             {cloudUrl && (
-              <a href={cloudUrl} target="_blank" rel="noopener noreferrer" className="btn btn-accent w-full">
+              <a href={cloudUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary w-full">
                 View your video now.
               </a>
             )}

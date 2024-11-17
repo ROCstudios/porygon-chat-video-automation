@@ -54,8 +54,6 @@ def refresh_token():
 
 @app.route('/generate', methods=['POST'])
 def generate_video():
-    instagram_url = None
-    tiktok_url = None
     cloud_video_path = None
     
     data = request.get_json()
@@ -79,8 +77,8 @@ def generate_video():
         return jsonify({'error': 'Information is required'}), 400
     
     try:
-        conversation_data = generate_conversation(topic, turns)
-        # conversation_data = [{'speaker': 'Person 1', 'message': 'Do you believe in love at first sight?', 'timestamp': '11:00 AM'}, {'speaker': 'Person 2', 'message': 'Yes, I think it can happen.', 'timestamp': '11:02 AM'}, {'speaker': 'Person 1', 'message': "That's interesting. I feel the same way.", 'timestamp': '11:04 AM'}, {'speaker': 'Person 2', 'message': "It's a beautiful thing, isn't it?", 'timestamp': '11:06 AM'}, {'speaker': 'Person 1', 'message': 'Yes, it surely is.', 'timestamp': '11:08 AM'}]
+        # conversation_data = generate_conversation(topic, turns)
+        conversation_data = [{'speaker': 'Person 1', 'message': 'Do you believe in love at first sight?', 'timestamp': '11:00 AM'}, {'speaker': 'Person 2', 'message': 'Yes, I think it can happen.', 'timestamp': '11:02 AM'}, {'speaker': 'Person 1', 'message': "That's interesting. I feel the same way.", 'timestamp': '11:04 AM'}, {'speaker': 'Person 2', 'message': "It's a beautiful thing, isn't it?", 'timestamp': '11:06 AM'}, {'speaker': 'Person 1', 'message': 'Yes, it surely is.', 'timestamp': '11:08 AM'}]
         images_list = draw_conversation(conversation_data, name)
         temp_video_path = create_video(images_list)
         print('🚀 ~ file: init.py:77 ~ temp_video_path:', temp_video_path);
