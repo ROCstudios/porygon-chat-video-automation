@@ -1,10 +1,15 @@
 import requests
 import os
+import time
 
 def get_video_size(video_path):
     return os.path.getsize(video_path)
 
-def init_video_upload(access_token, video_size, chunk_size=10000000):
+def init_video_upload(access_token, video_path):
+    chunk_size = 10000000
+    video_size = get_video_size(video_path)
+    print(f"🚨 TIKTOK POST: init_video_upload: {access_token}, {video_size}, {chunk_size}")
+
     url = 'https://open.tiktokapis.com/v2/post/publish/video/init/'
     
     headers = {
@@ -40,15 +45,18 @@ def init_video_upload(access_token, video_size, chunk_size=10000000):
         }
     }
     
-    response = requests.post(url, headers=headers, json=data)
+    response = requests.post(url, headers=headers, json=data, timeout=10)
     response_json = response.json()
-    
+    print(f"🚨 TIKTOK POST: resoibse fir yokiad: {response_json}")
+
     get_publish_id = response_json['data']['publish_id']
     get_upload_url = response_json['data']['upload_url']
 
     return get_publish_id, get_upload_url
 
 def upload_video_chunk(upload_url, video_path):
+    print(f"🚨 TIKTOK POST: upload_video_chunk: {upload_url}, {video_path}")
+
     # Get file size for Content-Range header
     file_size = os.path.getsize(video_path)
     
@@ -59,25 +67,26 @@ def upload_video_chunk(upload_url, video_path):
     
     with open(video_path, 'rb') as video_file:
         video_data = video_file.read()
-        response = requests.put(upload_url, headers=headers, data=video_data)
+        response = requests.put(upload_url, headers=headers, data=video_data, timeout=10)
+        print(f"🚨 TIKTOK POST: upload_video_chunk: {response.status_code}")
         
     return response.status_code == 200
 
 def check_post_status(access_token, publish_id, max_attempts=30):
+    print(f"🚨 TIKTOK POST: check_post_status: {access_token}, {publish_id}")
+
     url = 'https://open.tiktokapis.com/v2/post/publish/status/fetch/'
-    
     headers = {
         'Authorization': f'Bearer {access_token}',
         'Content-Type': 'application/json; charset=UTF-8'
     }
-    
     data = {
         'publish_id': publish_id
     }
 
     attempts = 0
     while attempts < max_attempts:
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, json=data, timeout=10)
         response_json = response.json()
         
         if 'data' not in response_json:

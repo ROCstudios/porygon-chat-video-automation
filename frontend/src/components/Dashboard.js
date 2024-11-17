@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { igGetToken, tiktokGetToken } from "../util/TokenService";
+
 const Dashboard = () => {
   const navigate = useNavigate();
 
@@ -19,14 +21,16 @@ const Dashboard = () => {
     } else {
       setLoading(true);
       try {
-        const response = await axios.post('http://localhost:8080/generate', {
-          topic: topic,
-          turns: turns,
-          caption: caption,
-          post_to_ig: postToIg,
-          post_to_tiktok: postToTiktok
-        });
-        console.log(response);
+        console.log(tiktokGetToken())
+        // const response = await axios.post('http://localhost:8080/generate', {
+        //   topic: topic,
+        //   turns: turns,
+        //   caption: caption,
+        //   post_to_ig: postToIg,
+        //   post_to_tiktok: postToTiktok,
+        //   tiktok_access_token: tiktokGetToken()
+        // });
+        // console.log(response);
       } catch (error) {
         console.error('Error generating content:', error);
         alert('Failed to generate content');
@@ -121,7 +125,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="w-1/2 pl-2">
-                <input type="range" min={0} max="10" value={turns} className="range mt-4" onChange={(e) => setTurns(e.target.value)} />
+                <input type="range" min={0} max="5" value={turns} className="range mt-4" onChange={(e) => setTurns(e.target.value)} />
                 <p>Number of turns: {turns}</p>
               </div>
             </div>

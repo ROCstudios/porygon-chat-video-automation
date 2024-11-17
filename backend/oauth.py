@@ -34,7 +34,8 @@ def get_refresh_token(refresh_token):
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Cache-Control': 'no-cache'
             },
-            data=data
+            data=data,
+            timeout=10
         )
 
         response_data = response.json()
@@ -79,6 +80,7 @@ def get_tiktok_auth_token(code):
     }
     
     response = requests.post(open_url, headers=headers, data=data, timeout=10)
+    print('authentication response: ', response.json())
     return response.json()
 
 def generate_auth_url():
@@ -104,6 +106,7 @@ def get_token(code):
     the url we generate here is manually navigated to by the user and then the code is sent back to us by cutting from the search bar.  Not ideal.
     '''
     json_response = get_tiktok_auth_token(code)
+    print('🚀 ~ file: oauth.py:108 ~ json_response:', json_response);
     access_token = json_response['access_token']
     refresh_token = json_response['refresh_token']
     open_id = json_response['open_id']

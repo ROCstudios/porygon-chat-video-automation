@@ -21,13 +21,13 @@ CORS(app, resources={
 })
 load_dotenv()
 
-@app.route('/auth', methods=['GET'])
+@app.route('/tiktokauth', methods=['GET'])
 def auth():
     generated_url = get_auth()
     return jsonify({'url': generated_url})
 
-@app.route('/token', methods=['POST'])
-def get_token_from_url():  # Remove the code parameter
+@app.route('/tiktoken', methods=['POST'])
+def get_token_from_url(): 
     try:
         data = request.get_json()
         code = data.get('code')
@@ -38,7 +38,10 @@ def get_token_from_url():  # Remove the code parameter
         access_token, refresh_token, open_id = get_token(code)
 
         return jsonify({
-            'success': access_token is not None and refresh_token is not None and open_id is not None
+            'success': access_token is not None and refresh_token is not None and open_id is not None,
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'open_id': open_id
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -57,11 +60,16 @@ def generate_video():
     caption = data.get('caption', f"Conversation about {topic}")
     post_to_ig = data.get('post_to_ig', False)
     post_to_tiktok = data.get('post_to_tiktok', False)
+    tiktok_access_token = data.get('tiktok_access_token')
+    print(f"tiktotken {tiktok_access_token}")
+
     
     if not topic:
         return jsonify({'error': 'Information is required'}), 400
     
     try:
+        instagram_url = None
+        tiktok_url = None
         # conversation_data = generate_conversation(topic, turns)
         conversation_data = [{'speaker': 'Person 1', 'message': 'Do you believe in love at first sight?', 'timestamp': '11:00 AM'}, {'speaker': 'Person 2', 'message': 'Yes, I think it can happen.', 'timestamp': '11:02 AM'}, {'speaker': 'Person 1', 'message': "That's interesting. I feel the same way.", 'timestamp': '11:04 AM'}, {'speaker': 'Person 2', 'message': "It's a beautiful thing, isn't it?", 'timestamp': '11:06 AM'}, {'speaker': 'Person 1', 'message': 'Yes, it surely is.', 'timestamp': '11:08 AM'}]
         images_list = draw_conversation(conversation_data)
@@ -73,12 +81,12 @@ def generate_video():
             print(f"♻️ GENERATE: Instagram URL: {instagram_url}")
 
         if post_to_tiktok:
-          publish_id, upload_url = init_video_upload(access_token, get_video_size(temp_video_path))
+          publish_id, upload_url = init_video_upload(tiktok_access_token, temp_video_path)
           upload_success = upload_video_chunk(upload_url, temp_video_path)
-          status_response = check_post_status(access_token, publish_id)
+          status_response = check_post_status(tiktok_access_token, publish_id)
 
-        if upload_success and status_response['status'] == 'PUBLISH_COMPLETE':
-            tiktok_url = f"https://www.tiktok.com/@{username}/video/{publish_id}"
+        #   tiktok_url = f"https://www.tiktok.com/@{username}/video/{publish_id}"
+
 
         return_data_ig = send_file(
             cloud_video_path,

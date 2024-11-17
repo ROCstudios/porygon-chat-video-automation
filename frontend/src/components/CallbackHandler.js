@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { saveToken, saveRefreshToken } from "../util/TokenService";
+import { igSaveToken, igSaveRefreshToken, tiktokSaveToken, tiktokSaveRefreshToken } from "../util/TokenService";
 
 const CallbackHandler = () => {
   const navigate = useNavigate();
@@ -17,14 +17,14 @@ const CallbackHandler = () => {
       // if (code) {
       if (true) {
         try {
-          const response = await axios.post("http://localhost:8080/token", {
+          const response = await axios.post("http://localhost:8080/tiktoken", {
             // code,
-            code: '80-wN4DpQpIImAeMVuHJVpmtu00YRZqiOxhIsAlZ-P59UqyCuW4LXAz8L-CILvdH0bB2IlQyrQSHxcTcet7NCE3CHzx0aUscm7ayZY9fUvmPk9up1Ijs5nb6UY7_7v8jWmzc6LST-CVm8lXL5ZiOiWtzCekJQiq-yhBiUH8K9sj21i_hEoRQU4YDZxAe4jlp%2A1%216299.va'
+            code: 'cXf_XwR0YbyVRy3eMXZQjyWhws0ebSRsInyXtQOnJ9uiq9kERQTj01J65BtUAHIGKAgdc7l2qn7QtLME6zzVTQolaYbavRUq73TEAFoQkrdJlsp4gFTwwtVNP5l5OcCv8avQb6QqHIZ75ykJwfpKLGQ_Vutjzh-nV8yuoa9AOBmb87t3STvqg0bPFepHFFn_%2A3%216345.va'
           });
-
+          console.log('🚀 ~ file: CallbackHandler.js:26 ~ handleCallback ~ response:', response);
           if (response.status === 200) {
-            saveToken(response.data.access_token);
-            saveRefreshToken(response.data.refresh_token);
+            tiktokSaveToken(response.data.access_token);
+            tiktokSaveRefreshToken(response.data.refresh_token);
              // Redirect to the dashboard after successful authentication
             navigate("/dashboard");
           } else {
