@@ -7,19 +7,28 @@ from ig_poster import upload_to_instagram
 from cloud_storage import upload_to_gcs
 from tiktok_poster import init_video_upload, upload_video_chunk, check_post_status
 from oauth import get_auth, get_token, get_refresh_token
+
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app, resources={
-    r"/*": {
-        "origins": ["http://localhost:3000"],  
-        "methods": ["GET", "POST"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-})
-load_dotenv()
+from config import config
+
+def create_app(config_name='default'):
+    app = Flask(__name__)
+    CORS(app, resources={
+        r"/*": {
+            "origins": ["http://localhost:3000"],  
+            "methods": ["GET", "POST"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
+    load_dotenv()
+    config_name = os.environ.get('FLASK_ENV', 'default')
+    app.config.from_object(config[config_name])
+    return app
+
+app = create_app()
 
 @app.route('/tiktokauth', methods=['GET'])
 def auth():

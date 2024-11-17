@@ -1,6 +1,13 @@
 backend/env
 backend/venv
-backend/env
+backend/.env*
+backend/!.env.example
 .env
 backend/porygon-video-generation-77fa8b367ac4.json
 backend/key.json
+backend/.env.local
+backend/.env.production
+
+node_modules
+.vscode/
+__pycache__
