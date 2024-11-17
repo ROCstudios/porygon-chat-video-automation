@@ -7,7 +7,7 @@ import config from "../config";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [simpleText, setSimpleText] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = async () => {
 
@@ -17,8 +17,11 @@ const Login = () => {
 
     const response = await axios.get(`${config.backendUrl}/tiktokauth`);
     const authUrl = response.data.url;
-    setSimpleText(authUrl);
-    // window.location.href = authUrl; 
+    if (response.status === 200) {
+      window.location.href = authUrl; 
+    } else {
+      setError("Failed to get authentication URL");
+    }
 
     // ! Deprecated this needs to be improved
     // if (getRefreshToken() !== null && getRefreshToken() !== "") {
@@ -70,7 +73,7 @@ const Login = () => {
         <div className="navbar-end">
         </div>
       </div>
-      {simpleText && <div role="alert" className="alert alert-error">
+      {error && <div role="alert" className="alert alert-error">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 shrink-0 stroke-current"
