@@ -11,3 +11,5 @@ backend/.env.production
 node_modules
 .vscode/
 __pycache__
+frontend/.firebaserc/
+frontend/.firebase/hosting.YnVpbGQ.cache

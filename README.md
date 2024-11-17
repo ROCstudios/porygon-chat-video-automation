@@ -210,3 +210,14 @@ gcloud logging read "resource.type=cloud_run_revision AND resource.labels.servic
 # View service details
 gcloud run services describe chat-image-generator --platform managed --region us-**central1**
 ```
+
+### Deploying to Firebase
+
+```
+npm install -g firebase-tools
+firebase login
+firebase init
+
+npm run build
+firebase deploy --only hosting
+```
