@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { igGetToken, tiktokGetToken } from "../util/TokenService";
+import config from "../config";
 
 
 const Dashboard = () => {
@@ -28,7 +29,7 @@ const Dashboard = () => {
     } else {
       setLoading(true);
       try {
-        const response = await axios.post(`${process.env.BACKEND_URL}/generate`, {
+        const response = await axios.post(`${config.backendUrl}/generate`, {
           topic: topic,
           turns: turns,
           caption: caption,

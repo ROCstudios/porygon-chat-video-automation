@@ -15,9 +15,10 @@ from flask_cors import CORS
 
 def create_app(config_name='default'):
     app = Flask(__name__)
+
     CORS(app, resources={
         r"/*": {
-            "origins": ["http://localhost:3000", "https://porygon-video-generation.web.app", "https://tiktok.oligarchventures.com"],  
+            "origins": ["http://localhost:3000", "https://porygon-video-generation.web.app", "https://tiktok.oligarchventures.com/*"],  
             "methods": ["GET", "POST"],
             "allow_headers": ["Content-Type", "Authorization"]
         }

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { tiktokSaveToken, tiktokSaveRefreshToken } from "../util/TokenService";
+import config from "../config";
 
 const CallbackHandler = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const CallbackHandler = () => {
 
       if (code) {
         try {
-          const response = await axios.post(`${process.env.BACKEND_URL}/tiktoken`, {
+          const response = await axios.post(`${config.backendUrl}/tiktoken`, {
             code: code
           });
           if (response.status === 200) {
