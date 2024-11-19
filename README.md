@@ -2,6 +2,54 @@
 
  <img src="https://github.com/user-attachments/assets/3a1380fe-b7f7-45a2-be77-51bdf3b07909" align="right" width="100" height="100" alt="Porygon Logo">
 
+### Table of Contents
+  - [Project Description](#project-description)
+  - [Using this app](#using-this-app)
+  - [Quick Start Commands in Dev Mode](#quick-start-commands-in-dev-mode)
+  - [Deployment Instructions](#deployment-instructions)
+  - [Setting up the project](#setting-up-the-project)
+  - [Setting Up Integrations](#setting-up-integrations)
+  - [Additional Deployment Steps](#additional-deployment-steps)
+
+### Project Description
+
+We have built a flask server that the generates a vide of a chat conversation after entering brief description of the conversation, a caption, and the name of the viewer of the conversations and then posts automatically to TikTok and Instagram.
+
+**Here's how we built it:
+**
+1. Generate scenarios
+   - Create dynamic conversations between two people using the ChatGPT API [you can get your key here](https://platform.openai.com/api-keys) and will need to be set in secrets file.
+   - Conversation is then passed within backend to our image generation tools.
+
+2. Generate the video from images
+   - We then use the Pillow library to generate images of the conversation.
+   - We then use the moviepy library to sequence the images and add sound effects.
+
+3. Upload to Instagram
+   - We submit our instagram API key to the backend and then use the instagram API to upload the video to Instagram.
+   - [Information needed for publishing reels using native IG](https://github.com/fbsamples/reels_publishing_apis/tree/main/insta_reels_publishing_api_sample?fbclid=IwZXh0bgNhZW0CMTEAAR1wf3OKOAHY3xp09E6USeHq7UJMblg9DK5oS0h31-_mYIx4qjGt4w1L9D4_aem_wWDShfiY8ppLdmrNlVMP9A)
+   - [Publishing reels using graph.instagram.com not facebook](https://developers.facebook.com/docs/video-api/guides/reels-publishing)
+   - [Handling error codes and expired tokens](https://developers.facebook.com/docs/facebook-login/guides/access-tokens#generating-an-app-access-token)
+
+4. Upload to TikTok
+   - We supply our client id and client secret in secret and use these to authenticate with TikTok through browser.
+   - A redirect url is set in the TikTok developer portal and we use this to redirect to our backend.
+   - It must be a production url to publish to TikTok.
+
+### Using this app
+
+**Authenticate with TikTok**
+
+
+**Authenticate with Instagram**
+
+
+**Generate a video**
+
+
+**Done!**
+
+
  ### Quick Start Commands in Dev Mode
 
 Run react app
@@ -19,30 +67,43 @@ cd backend && python init.py
 
 ### Deployment Instructions
 
-### Project Description
+Let's start with deploying our backend to GCP Cloud Run Service.
 
-I would like to build an automated content generation AI that does the following:
-1. Generate scenarios
-   - Create dynamic conversations between two people
-   - Develop engaging storylines
-   - Ensure natural dialogue flow
+Replace `porygon-video-generation` with your project id.  Replace `chat-image-generator` with the name of your service.
 
-2. Reflect content into designs
-   - Place text into provided message bubbles
-   - Adjust content to fit design templates
-   - Maintain visual consistency
+```
+cd backend
 
-3. Create video content
-   - Sequence screenshots in proper order
-   - Add synchronized sound effects
-   - Ensure smooth transitions
+# Runnable Docker
+docker build -t gcr.io/porygon-video-generation/chat-image-generator .
+docker push gcr.io/porygon-video-generation/chat-image-generator
 
-4. Upload to social platforms
-   - Post to TikTok
-   - Share on Instagram
-   - Monitor upload status
+# Deploy to Cloud Run
+gcloud builds submit --tag gcr.io/porygon-video-generation/chat-image-generator
 
-I want this pipeline to work on two different apps in two different categories, we can meet to discuss the requirements. Only apply if you are confident you have the skills for that and can achieve it within 2 weeks max
+gcloud run deploy chat-image-generator --image gcr.io/porygon-video-generation/chat-image-generator --platform managed --region us-central1 --allow-unauthenticated
+
+# Get service url
+gcloud run services describe chat-image-generator --platform managed --region us-central1 --format 'value(status.url)'
+
+# Test deployment
+curl -X GET \ 
+-H "Content-Type: application/json" \
+https://chat-image-generator-p22cordwkq-uc.a.run.app/tiktokauth
+```
+
+For the frontend, we use firebase.
+
+```
+cd frontend
+npm install firebase-tools
+npm run build:production
+firebase login
+firebase init 
+# select project
+# select only hosting NOT app hosting
+firebase deploy --only hosting
+```
 
 ### Setting up the project
 
@@ -56,7 +117,7 @@ Run the following command to install python dependencies in the backend folder
 cd backend && pip install -r requirements.txt
 ```
 
-### Setting Up
+### Setting Up Integrations
 
 We'll be working with
 
@@ -133,30 +194,8 @@ In the root of the project with the following names (case sensitive):
 ![Roc - Upwork Agency Banner](https://github.com/user-attachments/assets/79467e15-71b8-44ed-be35-d69701179169)
 
 
-### Deploying to GCP with Docker
 
-
-```
-docker build -t gcr.io/porygon-video-generation/chat-image-generator .
-docker push gcr.io/porygon-video-generation/chat-image-generator
-
-# Deploy to Cloud Run
-gcloud run deploy chat-image-generator \
-  --image gcr.io/porygon-video-generation/chat-image-generator \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated
-
-  # Test deployment
-  # Get service url
-  gcloud run services describe chat-image-generator --platform managed --region us-central1 --format 'value(status.url)'
-
-  curl -X GET \ 
-  -H "Content-Type: application/json" \
-  https://chat-image-generator-p22cordwkq-uc.a.run.app/tiktokauth
-```
-
-### Additional steps for more fine-toothed deployment
+### Additional Deployment Steps
 
 For local testing:
 ```
@@ -209,15 +248,4 @@ gcloud beta logging tail
 
 # View service details
 gcloud run services describe chat-image-generator --platform managed --region us-**central1**
-```
-
-### Deploying to Firebase
-
-```
-npm install -g firebase-tools
-firebase login
-firebase init
-
-npm run build
-firebase deploy --only hosting
 ```
