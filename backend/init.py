@@ -34,6 +34,17 @@ def create_app(config_name='default'):
 
 app = create_app()
 
+@app.route('/instaauth', methods=['POST'])
+def insta_auth():
+    '''
+    This endpoint receives the auth code and saves it to a local file that is persistent across server restarts.
+    '''
+    data = request.get_json()
+    code = data.get('code')
+    with open('instagram_token.txt', 'w') as f:
+        f.write(code)
+    return jsonify({'success': True})
+
 @app.route('/tiktokauth', methods=['GET'])
 def auth():
     generated_url = get_auth()

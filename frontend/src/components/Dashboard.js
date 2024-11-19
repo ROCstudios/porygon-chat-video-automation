@@ -96,6 +96,7 @@ const Dashboard = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
               <li><a href="/">Login</a></li>
+              <li><a href="/instaauth">Instagram Auth</a></li>
               <li><a href="/redirect">Callback Handler</a></li>
               <li><a href="/dashboard">Dashboard</a></li>
             </ul>
@@ -122,7 +123,14 @@ const Dashboard = () => {
           <span>{error}</span>
         </div>
       }
-      <div className="hero bg-base-200 min-h-screen">
+      <div className="flex justify-center bg-base-200 p-4">
+        <ul className="steps">
+          <li className="step">TikTok Auth</li>
+          <li className="step">Instagram Auth</li>
+          <li className="step step-secondary">Generate!</li>
+        </ul>
+      </div>
+      <div className="hero bg-base-200 min-h-screen -mt-16">
         <div className="hero-content text-center">
           {loading ? (
             <div className="flex flex-col justify-center items-center h-full">

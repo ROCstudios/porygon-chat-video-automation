@@ -15,3 +15,4 @@ frontend/.firebaserc/
 frontend/.firebase/hosting.YnVpbGQ.cache
 frontend/.env.staging
 frontend/.env.development
+backend/instagram_token.txt

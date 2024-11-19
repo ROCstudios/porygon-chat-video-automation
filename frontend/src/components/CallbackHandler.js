@@ -25,7 +25,7 @@ const CallbackHandler = () => {
             tiktokSaveRefreshToken(response.data.refresh_token);
 
             // Redirect to the dashboard after successful authentication
-            navigate("/dashboard");
+            navigate("/instaauth");
           } else {
             alert("Authentication failed!");
           }
@@ -63,6 +63,7 @@ const CallbackHandler = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
               <li><a href="/">Login</a></li>
+              <li><a href="/instaauth">Instagram Auth</a></li>
               <li><a href="/redirect">Callback Handler</a></li>
               <li><a href="/dashboard">Dashboard</a></li>
             </ul>

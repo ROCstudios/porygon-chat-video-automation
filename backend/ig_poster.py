@@ -5,11 +5,12 @@ import time
 from datetime import datetime, timedelta
 
 
-
 def upload_to_instagram(public_url, caption):
     print(f"📧 UPLOAD TO INSTAGRAM: Uploading video to Instagram with caption: {caption}")
 
-    access_token = configer['INSTAGRAM_TOKEN']
+    # Load locally saved Instagram token
+    with open('instagram_token.txt', 'r') as f:
+        access_token = f.read().strip()
     print(f"📧 UPLOAD TO INSTAGRAM: Access token: {access_token}")
 
     # Step 0: Get Instagram Business Account ID

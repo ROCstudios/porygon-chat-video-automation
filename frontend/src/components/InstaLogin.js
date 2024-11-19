@@ -5,24 +5,22 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import config from "../config";
 
-const Login = () => {
+const InstaLogin = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [code, setCode] = useState("");
 
-  const handleLogin = async () => {
+  const handleTokenSend = async () => {
 
-    // TODO We need to have seperate conditional logic for the Instagram token logic.
-    // Instagram can be automated but we'll need  a more explicit approach since TikTok expires quickly
-    // Research their docs.
-
-    const response = await axios.get(`${config.backendUrl}/tiktokauth`);
-    const authUrl = response.data.url;
+    const response = await axios.post(`${config.backendUrl}/instaauth`, {
+      code: code
+    });
     if (response.status === 200) {
-      window.location.href = authUrl; 
+      navigate("/dashboard")
     } else {
-      setError("Failed to get authentication URL");
+      setError("Failed to save auth token");
     }
-  };
+  }
 
   return (
     <div>
@@ -76,19 +74,20 @@ const Login = () => {
       }
       <div className="flex justify-center bg-base-200 p-4">
         <ul className="steps">
-          <li className="step step-secondary">TikTok Auth</li>
-          <li className="step">Instagram Auth</li>
+          <li className="step">TikTok Auth</li>
+          <li className="step step-secondary">Instagram Auth</li>
           <li className="step">Generate!</li>
         </ul>
       </div>
       <div className="hero bg-base-200 min-h-screen -mt-16">
         <div className="hero-content text-center">
           <div className="max-w-md">
-            <h1 className="text-5xl font-bold">Login</h1>
+            <h1 className="text-5xl font-bold">Add IG Token</h1>
             <p className="py-6">
-              Let's get you generating your content!  We'll redirect you to get your instagram token after you verify your account and then we'll send you to the main page.  If you've already verified your account, just click the button below.
+              We'll need you to visit your app dashboard and select the "instagram api auth" option.  Once you've done that, paste the code below.
             </p>
-            <button className="btn btn-primary mt-4 w-full" onClick={handleLogin}>Access Generator!</button>
+            <input type="text" placeholder="Paste your code here" className="input input-bordered input-primary w-full max-w-xl" onChange={(e) => setCode(e.target.value)} />
+            <button className="btn btn-primary mt-4 w-full" onClick={handleTokenSend} >Add Token</button>
           </div>
         </div>
       </div>
@@ -96,4 +95,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default InstaLogin;
