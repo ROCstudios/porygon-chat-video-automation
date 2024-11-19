@@ -39,13 +39,13 @@ We have built a flask server that the generates a vide of a chat conversation af
 ### Using this app
 
 **Authenticate with TikTok**
-
+<img width="2537" alt="Screenshot 2024-11-19 at 6 37 15 PM" src="https://github.com/user-attachments/assets/0c79a66a-bb9e-4b41-88db-d478c9510226">
 
 **Authenticate with Instagram**
-
+<img width="2544" alt="Screenshot 2024-11-19 at 6 38 10 PM" src="https://github.com/user-attachments/assets/3840a7cb-a00b-4572-acca-80ac986c71f8">
 
 **Generate a video**
-
+<img width="2543" alt="Screenshot 2024-11-19 at 6 38 40 PM" src="https://github.com/user-attachments/assets/424011cc-e4af-48af-a8a9-ada7bb61f118">
 
 **Done!**
 
