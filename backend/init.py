@@ -6,12 +6,14 @@ from convo_gen import generate_conversation
 from ig_poster import upload_to_instagram
 from cloud_storage import upload_to_gcs
 from tiktok_poster import init_video_upload, upload_video_chunk, check_post_status
-from oauth import get_auth, get_token, get_refresh_token
 
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 
+from routes.auth import auth_routes
+from routes.generate import generate_routes
+from routes.set import set_routes
 
 def create_app(config_name='default'):
     app = Flask(__name__)
@@ -33,48 +35,9 @@ def create_app(config_name='default'):
     return app
 
 app = create_app()
-
-@app.route('/instaauth', methods=['POST'])
-def insta_auth():
-    '''
-    This endpoint receives the auth code and saves it to a local file that is persistent across server restarts.
-    '''
-    data = request.get_json()
-    code = data.get('code')
-    with open('instagram_token.txt', 'w') as f:
-        f.write(code)
-    return jsonify({'success': True})
-
-@app.route('/tiktokauth', methods=['GET'])
-def auth():
-    generated_url = get_auth()
-    return jsonify({'url': generated_url})
-
-@app.route('/tiktoken', methods=['POST'])
-def get_token_from_url(): 
-    try:
-        data = request.get_json()
-        code = data.get('code')
-        
-        if not code:
-            return jsonify({'error': 'Code is required'}), 400
-
-        access_token, refresh_token, open_id = get_token(code)
-
-        return jsonify({
-            'success': access_token is not None and refresh_token is not None and open_id is not None,
-            'access_token': access_token,
-            'refresh_token': refresh_token,
-            'open_id': open_id
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/refresh', methods=['POST'])
-def refresh_token():
-    data = request.get_json()
-    refresh_token = data.get('refresh_token')
-    return jsonify(get_refresh_token(refresh_token))
+app.register_blueprint(auth_routes, url_prefix='/auth')
+app.register_blueprint(generate_routes, url_prefix='/generate')
+app.register_blueprint(set_routes, url_prefix='/set')
 
 @app.route('/generate', methods=['POST'])
 def generate_video():
@@ -142,17 +105,7 @@ def generate_video():
         return jsonify({'error': str(e)}), 500
 
 def main():
-    parser = argparse.ArgumentParser(description='Generate conversation videos')
-    parser.add_argument('--topic', type=str, required=True, help='Topic for the conversation')
-    parser.add_argument('--turns', type=int, default=5, help='Number of conversation turns (default: 5)')
-    parser.add_argument('--name', type=str, required=True, help='Name of the person in the conversation')
-
-    # Parse arguments
-    args = parser.parse_args()
-
-    # conversation_data = generate_conversation(args.topic, args.turns)
-    # images_list = draw_conversation(conversation_data, args.name)
-    # video_destination = create_video(images_list)
+    pass
 
 if __name__ == "__main__":
     # Use PORT environment variable for Cloud Run
