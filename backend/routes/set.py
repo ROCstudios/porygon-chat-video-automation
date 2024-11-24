@@ -17,13 +17,13 @@ TEMP_AUDIO_DIR = os.path.join(TEMP_DIR, 'audio')
 os.makedirs(TEMP_AVATAR_DIR, exist_ok=True)
 os.makedirs(TEMP_AUDIO_DIR, exist_ok=True)
 
-@set_routes.route('/set/convo', methods=['POST'])
+@set_routes.route('/convo', methods=['POST'])
 def set_convo():
     data = request.get_json()
     conversation_data.update(data)
     return jsonify({"message": "Conversation data saved", "data": conversation_data})
 
-@set_routes.route('/set/avatar', methods=['POST'])
+@set_routes.route('/avatar', methods=['POST'])
 def set_avatar():
     if 'file' not in request.files:
         return jsonify({"error": "No file provided"}), 400
@@ -49,7 +49,7 @@ def set_avatar():
     
     return jsonify({"error": "Invalid file type"}), 400
 
-@set_routes.route('/set/audio', methods=['POST'])
+@set_routes.route('/audio', methods=['POST'])
 def set_audio():
     if 'file' not in request.files:
         return jsonify({"error": "No file provided"}), 400

@@ -14,13 +14,20 @@ const Conversation = () => {
   const [error, setError] = useState(null);
 
   const [topic, setTopic] = useState("");
-  const [caption, setCaption] = useState("");
   const [turns, setTurns] = useState(5);
-  const [convoImages, setConvoImages] = useState([]);
+  const [jsonConvos, setJsonConvos] = useState([]);
 
-  const convoSelected = (convo) => {
-    // backend call to save the convo
-    navigate('/avatar');
+  const convoSelected = async (convo) => {
+    setLoading(true);
+    const response = await axios.post(`${config.backendUrl}/set/convo`, {
+      convo: convo
+    });
+    if (response.status === 200) {
+      navigate('/avatar');
+    } else {
+      setError("Error: " + response.data.error);
+    }
+    setLoading(false);
   }
 
   const handleGenerate = async () => {
@@ -30,16 +37,29 @@ const Conversation = () => {
       return;
     } else {
       setLoading(true);
-      try {
-        const response = await axios.post(`${config.backendUrl}/generate/convo`, {
-          topic: topic,
-          turns: turns,
-        });
-        console.log('🚀 ~ file: Dashboard.js:34 ~ handleGenerate ~ response:', response.data);
+      setJsonConvos([]);
 
-        if (response.data.status === 'success') {
-          // setConvoImages(response.data.convo_images);
-        }
+      try {
+        const responses = await Promise.all([
+          axios.post(`${config.backendUrl}/generate/convo`, {
+            topic: topic,
+            turns: turns,
+          }),
+          axios.post(`${config.backendUrl}/generate/convo`, {
+            topic: topic,
+            turns: turns,
+          }),
+          axios.post(`${config.backendUrl}/generate/convo`, {
+            topic: topic,
+            turns: turns,
+          })
+        ]);
+
+        responses.forEach(response => {
+          if (response.status === 200) {
+            setJsonConvos(prevConvos => [...prevConvos, response.data]);
+          }
+        });
       } catch (error) {
         console.error('Error generating content:', error);
         setError("Error: " + error.response.data.error);
@@ -53,39 +73,85 @@ const Conversation = () => {
     <div>
       <NavBar />
       <StepsIndicator currentStep={3} />
-      { error && <ErrorAlert message={error} /> }
+      {error && <ErrorAlert message={error} />}
       <div className="hero bg-base-200 min-h-screen -mt-16">
-        <div className="hero-content text-center">
-          {loading ? (
-            <div className="flex flex-col justify-center items-center h-full">
-              <p className="text-xl">Please wait...</p>
-              <span className="loading loading-dots loading-lg"></span>
+        {
+          jsonConvos.length > 0 ? (
+            <div className="flex flex-col justify-center items-center">
+              <div className="label">
+                <span className="label-text text-lg font-bold">Just click on the conversation you want to go with!</span>
+              </div>
+              <div className="hero-content text-center grid grid-cols-3 gap-4">
+                <div className="col-span-1">
+                  <div className="flex flex-col gap-2 card bg-base-100 w-96 shadow-xl px-4 py-8 mx-aut aspect-[9/16]" onClick={() => convoSelected(jsonConvos[0])}>
+                    {jsonConvos[0].map((convo, index) => (
+                      <div key={index} className={`chat ${convo.speaker === "Person 1" ? "chat-end" : "chat-start"}`}>
+                        <div className={`chat-bubble ${convo.speaker === "Person 1" ? "chat-bubble-primary" : "chat-bubble-success"}`}>
+                          {convo.message}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="col-span-1">
+                  <div className="flex flex-col gap-2 card bg-base-100 w-96 shadow-xl px-4 py-8 mx-auto aspect-[9/16]" onClick={() => convoSelected(jsonConvos[1])}>
+                    {jsonConvos[1].map((convo, index) => (
+                      <div key={index} className={`chat ${convo.speaker === "Person 1" ? "chat-end" : "chat-start"}`}>
+                        <div className={`chat-bubble ${convo.speaker === "Person 1" ? "chat-bubble-secondary" : "chat-bubble-info"}`}>
+                          {convo.message}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="col-span-1">
+                  <div className="flex flex-col gap-2 card bg-base-100 w-96 shadow-xl px-4 py-8 mx-auto aspect-[9/16]" onClick={() => convoSelected(jsonConvos[2])}>
+                    {jsonConvos[2].map((convo, index) => (
+                      <div key={index} className={`chat ${convo.speaker === "Person 1" ? "chat-end" : "chat-start"}`}>
+                        <div className={`chat-bubble ${convo.speaker === "Person 1" ? "chat-bubble-accent" : "chat-bubble-error"}`}>
+                          {convo.message}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <button className="btn btn-primary w-full max-w-lg mt-4" onClick={() => { setJsonConvos([]) }}>Reset</button>
             </div>
           ) : (
-            <div className="max-w-lg">
-              <h1 className="text-5xl font-bold">Let's Get This Chat Started! 🎉</h1>
-            <p className="py-6">
-            </p>
-            <label>
-              <div className="label">
-                <span className="label-text">Topic of the conversation that AI will generate</span>
-              </div>
-              <textarea
-                placeholder="Type your chat here..."
-                className="textarea textarea-bordered textarea-lg w-full max-w-lg"
-                onChange={(e) => setTopic(e.target.value)}
-                >
-              </textarea>
-            </label>
-            <div className="label">
-                <span className="label-text">Number of chat bubbles</span>
-              </div>
-            <input type="range" min={0} max="10" value={turns} className="range mt-4" onChange={(e) => setTurns(e.target.value)} />
-            <p className="font-bold">Number of turns: {turns}</p> 
-            <button className="btn btn-primary w-full max-w-lg mt-4" onClick={handleGenerate}>Generate!</button>
+            <div className="hero-content text-center">
+              {loading && jsonConvos.length === 0 ? (
+                <div className="flex flex-col justify-center items-center h-full">
+                  <p className="text-xl">Please wait...</p>
+                  <span className="loading loading-dots loading-lg"></span>
+                </div>
+              ) : (
+                <div className="max-w-lg">
+                  <h1 className="text-5xl font-bold">Let's Get This Chat Started! 🎉</h1>
+                  <p className="py-6">
+                  </p>
+                  <label>
+                    <div className="label">
+                      <span className="label-text">Topic of the conversation that AI will generate</span>
+                    </div>
+                    <textarea
+                      placeholder="Type your chat here..."
+                      className="textarea textarea-bordered textarea-lg w-full max-w-lg"
+                      onChange={(e) => setTopic(e.target.value)}
+                    >
+                    </textarea>
+                  </label>
+                  <div className="label">
+                    <span className="label-text">Number of chat bubbles</span>
+                  </div>
+                  <input type="range" min={0} max="10" value={turns} className="range mt-4" onChange={(e) => setTurns(e.target.value)} />
+                  <p className="font-bold">Number of turns: {turns}</p>
+                  <button className="btn btn-primary w-full max-w-lg mt-4" onClick={handleGenerate}>Generate!</button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          )
+        }
       </div>
     </div>
   );
