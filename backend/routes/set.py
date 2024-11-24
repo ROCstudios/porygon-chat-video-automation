@@ -8,14 +8,7 @@ set_routes = Blueprint('set', __name__)
 
 # Global storage dictionaries for non-file data
 conversation_data = {}
-
-# Create temp directories if they don't exist
-TEMP_DIR = tempfile.gettempdir()
-TEMP_AVATAR_DIR = os.path.join(TEMP_DIR, 'avatars')
-TEMP_AUDIO_DIR = os.path.join(TEMP_DIR, 'audio')
-
-os.makedirs(TEMP_AVATAR_DIR, exist_ok=True)
-os.makedirs(TEMP_AUDIO_DIR, exist_ok=True)
+avatar_data = {}
 
 @set_routes.route('/convo', methods=['POST'])
 def set_convo():
@@ -25,29 +18,21 @@ def set_convo():
 
 @set_routes.route('/avatar', methods=['POST'])
 def set_avatar():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file provided"}), 400
+    data = request.get_json()
+    name = data.get('name')
+    file_name = data.get('avatar')
     
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error": "No file selected"}), 400
+    if not name or not file_name:
+        return jsonify({"error": "No name provided"}), 400
     
-    if file and file.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-        filename = secure_filename(file.filename)
-        # Clear previous avatars
-        shutil.rmtree(TEMP_AVATAR_DIR)
-        os.makedirs(TEMP_AVATAR_DIR)
-        
-        filepath = os.path.join(TEMP_AVATAR_DIR, filename)
-        file.save(filepath)
-        
-        return jsonify({
-            "message": "Avatar saved",
-            "filename": filename,
-            "path": filepath
-        })
+    # Store the name in your conversation_data dictionary
+    avatar_data['avatar_name'] = name
+    avatar_data['avatar_file_name'] = file_name
     
-    return jsonify({"error": "Invalid file type"}), 400
+    return jsonify({
+        "message": "Avatar name saved",
+        "file_name": file_name
+    })
 
 @set_routes.route('/audio', methods=['POST'])
 def set_audio():

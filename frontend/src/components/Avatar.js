@@ -16,6 +16,19 @@ const Avatar = () => {
   const [name, setName] = useState("");
   const [selectedAvatarIndex, setSelectedAvatarIndex] = useState(-1);
 
+  const simpleAvatarName = [
+    "icons8-circled-user-female-skin-type-1-and-2-96.png",
+    "icons8-circled-user-female-skin-type-1-and-2-96.png",
+    "icons8-circled-user-female-skin-type-5-96.png",
+    "icons8-circled-user-female-skin-type-6-96.png",
+    "icons8-circled-user-female-skin-type-6-96.png",
+    "icons8-circled-user-male-skin-type-1-and-2-96.png",
+    "icons8-circled-user-male-skin-type-3-96.png",
+    "icons8-circled-user-male-skin-type-5-96.png",
+    "icons8-circled-user-male-skin-type-6-96.png",
+    "icons8-male-user-96.png",
+  ]
+
   const avatars = [
     require("../assets/icons8-circled-user-female-skin-type-1-and-2-96.png"),
     require("../assets/icons8-circled-user-female-skin-type-1-and-2-96.png"),
@@ -37,15 +50,15 @@ const Avatar = () => {
     } else {
       setLoading(true);
       try {
-        const response = await axios.post(`${config.backendUrl}/save/avatar`, {
-          avatar: selectedAvatarIndex,
+        const response = await axios.post(`${config.backendUrl}/set/avatar`, {
+          avatar: simpleAvatarName[selectedAvatarIndex],
           name: name
         });
-
-        if (response.data.status === 'success') {
+        console.log('🚀 ~ file: Avatar.js:42 ~ saveAvatar ~ response:', response);
+        
+        if (response.status === 200) {
           navigate('/audio');
         }
-
       } catch (error) {
         console.error('Error generating content:', error);
         setError("Error: " + error.response.data.error);
