@@ -4,7 +4,6 @@ from werkzeug.utils import secure_filename
 import shutil
 import time
 
-
 set_routes = Blueprint('set', __name__)
 
 # Configure upload settings
@@ -12,18 +11,20 @@ UPLOAD_FOLDER = 'uploads/audio'
 ALLOWED_EXTENSIONS = {'mp3', 'wav', 'ogg', 'm4a'}
 MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB limit
 
+# Global storage dictionaries for non-file data
+conversation_data = {}
+avatar_data = {}
+audio_data = {}
+
 # Helper function to check allowed file extensions
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Global storage dictionaries for non-file data
-conversation_data = {}
-avatar_data = {}
-
 @set_routes.route('/convo', methods=['POST'])
 def set_convo():
     data = request.get_json()
+    conversation_data.clear()
     conversation_data.update(data)
     return jsonify({"message": "Conversation data saved", "data": conversation_data})
 
@@ -67,6 +68,9 @@ def set_audio():
             
             filepath = os.path.join(UPLOAD_FOLDER, filename)
             audio_file.save(filepath)
+
+            audio_data['audio_file_name'] = filename
+            audio_data['audio_file_path'] = filepath
             
             return jsonify({
                 "message": "Audio saved",

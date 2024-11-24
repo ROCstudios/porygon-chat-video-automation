@@ -1,11 +1,12 @@
 from flask import Blueprint, request, jsonify
-from convo_gen import generate_conversation
 from image_gen import draw_conversation
 from movie_gen import create_video
 from ig_poster import upload_to_instagram
 from cloud_storage import upload_to_gcs
 from tiktok_poster import init_video_upload, upload_video_chunk, check_post_status
 import os
+
+from set import conversation_data, avatar_data, audio_data
 
 generate_routes = Blueprint('generate', __name__)
 
@@ -24,8 +25,9 @@ def generate():
 
 @generate_routes.route('/movie', methods=['POST'])
 def generate_movie():
+
     try:
-        images_list = draw_conversation(conversation_data, name)
+        images_list = draw_conversation(conversation_data, avatar_data['name'])
         temp_video_path = create_video(images_list)
         print('🚀 ~ file: init.py:77 ~ temp_video_path:', temp_video_path);
         cloud_video_path = upload_to_gcs(temp_video_path)

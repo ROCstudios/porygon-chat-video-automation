@@ -15,38 +15,58 @@ const Audio = () => {
 
   const [audio, setAudio] = useState(null);
 
-  const handleGenerate = async () => {
+  const generationConfirmed = async () => {
+    document.getElementById('winning_modal').close()
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('audio', audio);
+
+      const response = await axios.post(`${config.backendUrl}/set/audio`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log('🚀 ~ file: Dashboard.js:34 ~ handleGenerate ~ response:', response.data);
+
+      if (response.status === 200) {
+        navigate('/poster');
+      }
+    } catch (error) {
+      console.error('Error generating content:', error);
+      setError("Error: " + error.response.data.error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleGenerate = () => {
     setError(null);
     if (audio === null) {
       setError("Please upload an audio file");
       return;
     } else {
-      setLoading(true);
-      try {
-        const formData = new FormData();
-        formData.append('audio', audio);
-
-        const response = await axios.post(`${config.backendUrl}/set/audio`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        console.log('🚀 ~ file: Dashboard.js:34 ~ handleGenerate ~ response:', response.data);
-
-        if (response.status === 200) {
-          navigate('/poster');
-        }
-      } catch (error) {
-        console.error('Error generating content:', error);
-        setError("Error: " + error.response.data.error);
-      } finally {
-        setLoading(false);
-      }
+      document.getElementById('winning_modal').showModal()
     }
   };
 
   return (
     <div>
+      <dialog id="winning_modal" className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">This will generate a video for review.  Are you sure?</h3>
+          <div className="py-4">
+            <button className="btn btn-primary w-full max-w-lg" onClick={generationConfirmed}>
+              Yes, generate my video!
+            </button>
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
       <NavBar />
       { error && <ErrorAlert message={error} /> }
       <StepsIndicator currentStep={5} />

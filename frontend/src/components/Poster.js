@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { igGetToken, tiktokGetToken } from "../util/TokenService";
 import StepsIndicator from "./StepsIndicator";
@@ -20,6 +20,14 @@ const Poster = () => {
 
   const [cloudUrl, setCloudUrl] = useState(null);
 
+  useEffect(async () => {
+    if (cloudUrl == null) {
+      const movieResponse = await axios.post(`${config.backendUrl}/generate/movie`);
+      console.log('🚀 ~ file: Poster.js:34 ~ useEffect ~ movieResponse:', movieResponse.data);
+      setCloudUrl(movieResponse.data.cloud_url);
+    }
+  }, [cloudUrl])
+
   const handleGenerate = async () => {
     setError(null);
     if ((postToIg === false && postToTiktok === false)) {
@@ -38,8 +46,6 @@ const Poster = () => {
 
         if (response.data.status === 'success') {
           setCloudUrl(response.data.cloud_url);
-
-          document.getElementById('winning_modal').showModal()
         }
         
       } catch (error) {
@@ -110,7 +116,7 @@ const Poster = () => {
               <div className="w-1/2 pl-2">
               </div>
             </div>
-              <button className="btn btn-primary w-full max-w-lg mt-4" onClick={handleGenerate}>Generate!</button>
+              <button className="btn btn-primary w-full max-w-lg mt-4" onClick={handleGenerate}>Post it now!!</button>
             </div>
           )}
         </div>
