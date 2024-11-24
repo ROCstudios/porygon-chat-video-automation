@@ -14,18 +14,31 @@ const Avatar = () => {
   const [error, setError] = useState(null);
 
   const [name, setName] = useState("");
-  const [avatar, setAvatar] = useState("");
+  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState(-1);
+
+  const avatars = [
+    require("../assets/icons8-circled-user-female-skin-type-1-and-2-96.png"),
+    require("../assets/icons8-circled-user-female-skin-type-1-and-2-96.png"),
+    require("../assets/icons8-circled-user-female-skin-type-5-96.png"),
+    require("../assets/icons8-circled-user-female-skin-type-6-96.png"),
+    require("../assets/icons8-circled-user-female-skin-type-6-96.png"),
+    require("../assets/icons8-circled-user-male-skin-type-1-and-2-96.png"),
+    require("../assets/icons8-circled-user-male-skin-type-3-96.png"),
+    require("../assets/icons8-circled-user-male-skin-type-5-96.png"),
+    require("../assets/icons8-circled-user-male-skin-type-6-96.png"),
+    require("../assets/icons8-male-user-96.png"),
+  ];
 
   const saveAvatar = async () => {
     setError(null);
-    if (name === "" || avatar === "") {
+    if (name === "" || selectedAvatarIndex === -1) {
       setError("Please enter valid information");
       return;
     } else {
       setLoading(true);
       try {
         const response = await axios.post(`${config.backendUrl}/save/avatar`, {
-          avatar: avatar,
+          avatar: selectedAvatarIndex,
           name: name
         });
 
@@ -58,11 +71,10 @@ const Avatar = () => {
             <div className="max-w-lg">
               <h1 className="text-5xl font-bold">Who are you?</h1>
               <p className="py-6">
-
               </p>
               <label>
                 <div className="label">
-                  <span className="label-text">Name that appears above the chat bubbles</span>
+                  <span className="label-text">Name that appears in your header</span>
                 </div>
                 <input
                   type="text"
@@ -71,7 +83,16 @@ const Avatar = () => {
                   onChange={(e) => setName(e.target.value)}
                 />
               </label>
-              <button className="btn btn-primary w-full max-w-lg mt-4" onClick={saveAvatar}>Generate!</button>
+              <div className="grid grid-cols-5 gap-4 mt-4">
+                {avatars.slice(0, 10).map((avatar, index) => (
+                  <div className="avatar" key={index} onClick={() => setSelectedAvatarIndex(index)}>
+                    <div className={`w-24 rounded-full ${selectedAvatarIndex === index ? 'ring ring-secondary ring-offset-base-100 ring-offset-2' : ''}`}>
+                      <img src={avatar} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button className="btn btn-primary w-full max-w-lg mt-4" onClick={saveAvatar}>Create Avatar!</button>
             </div>
           )}
         </div>
