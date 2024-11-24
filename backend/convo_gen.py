@@ -30,9 +30,11 @@ def generate_conversation(topic, num_turns=5):
     print(f"💬 GENERATE CONVERSATION: Generating conversation about {topic} with {num_turns} turns")
     prompt = f"""You are generating a friendly conversation between two people, Person 1 and Person 2, about {topic} that should only have {num_turns} text messages. Each person should respond in 1 short sentence. Format each message in JSON format as follows: {{\"speaker\": \"Person X\", \"message\": \"Text\", \"timestamp\": \"Time\"}}. Each response should be a single JSON object.
 
-    Something else that is importatant is the timestamps.  They should be sequential and start with the current time like in the example below. There should be no discernable patterns to the timestamps.
+    Something else that is importatant is the timestamps.  They should be sequential and start with the current time like in the example below. There should be no discernable patterns to the timestamps.  For example, if the current time is 1:44 PM, the timestamps COULD BE 01:44 PM, 02:13 PM, 02:17 PM, 3:00 PM, 4:44 PM, 4:59 PM, etc.
 
-Here is an example of your output in JSON format between [EXAMPLE] and [END EXAMPLE].  
+    The conversations should reflect a real conversation, defined as not one person talking at a time, but rather two people talking meaning one person can send multiple messages in a row before the other replies.  Though not all of the time, do this randomly to make it more realistic.
+
+Here are examples of your output in JSON format between [EXAMPLE] and [END EXAMPLE].  
 [EXAMPLE]
 [
     {{   
@@ -41,19 +43,67 @@ Here is an example of your output in JSON format between [EXAMPLE] and [END EXAM
         \"timestamp\": \"01:44 PM\"
     }},
     {{
-        \"speaker\": \"Person 1\",
+        \"speaker\": \"Person 2\",
         \"message\": \"Great, me too. Talk to you soon!\",
-        \"timestamp\": \"01:46 PM\"
+        \"timestamp\": \"01:49 PM\"
+    }},
+    {{
+        \"speaker\": \"Person 1\",
+        \"message\": \"Sure, see you soon. Have a nice day!\",
+        \"timestamp\": \"02:28 PM\"
     }},
     {{
         \"speaker\": \"Person 2\",
+        \"message\": \"You too, have a great day!\",
+        \"timestamp\": \"03:50 PM\"
+    }}
+]
+[END EXAMPLE]
+[EXAMPLE]
+[
+    {{   
+        \"speaker\": \"Person 1\",
+        \"message\": \"Sounds good. Looking forward to it!\",
+        \"timestamp\": \"12:01 PM\"
+    }},
+    {{
+        \"speaker\": \"Person 2\",
+        \"message\": \"Great, me too. Talk to you soon!\",
+        \"timestamp\": \"12:02 PM\"
+    }},
+    {{
+        \"speaker\": \"Person 1\",
         \"message\": \"Sure, see you soon. Have a nice day!\",
-        \"timestamp\": \"01:48 PM\"
+        \"timestamp\": \"01:18 PM\"
+    }},
+    {{
+        \"speaker\": \"Person 2\",
+        \"message\": \"You too, have a great day!\",
+        \"timestamp\": \"01:22 PM\"
+    }}
+]
+[END EXAMPLE]
+[EXAMPLE]
+[
+    {{   
+        \"speaker\": \"Person 1\",
+        \"message\": \"Sounds good. Looking forward to it!\",
+        \"timestamp\": \"12:22 PM\"
+    }},
+    {{
+        \"speaker\": \"Person 2\",
+        \"message\": \"Great, me too. Talk to you soon!\",
+        \"timestamp\": \"12:23 PM\"
+    }},
+    {{
+        \"speaker\": \"Person 1\",
+        \"message\": \"Sure, see you soon. Have a nice day!\",
+        \"timestamp\": \"01:01 PM\"
     }},
     {{
         \"speaker\": \"Person 1\",
         \"message\": \"You too, have a great day!\",
-        \"timestamp\": \"01:50 PM\"
+        \"timestamp\": \"01:49 PM\"
     }}
 ]
 [END EXAMPLE]

@@ -166,27 +166,24 @@ def draw_conversation(conversation_data, name):
   images_list = []
   current_y = 50 + action_bar_height  # Starting y position
 
-  for i in range(len(conversation_data)):
-      # Initialize new image for each progressive conversation
-      in_img = Image.new("RGB", (width, height), color=background_color)
-      in_draw = ImageDraw.Draw(in_img)
+  # Initialize single image for complete conversation
+  in_img = Image.new("RGB", (width, height), color=background_color)
+  in_draw = ImageDraw.Draw(in_img)
+  
+  # Draw complete conversation
+  for item in conversation_data:
+      sender = item["speaker"] == "Person 1"
+      current_y = draw_bubble(
+          in_draw,
+          in_img, 
+          item["message"],
+          sender=sender,
+          timestamp=item["timestamp"],
+          y_position=current_y,
+          name=name
+      )
       
-      current_y = 50 + action_bar_height  # Reset starting y position
-      
-      # Draw conversation up to current message
-      for item in conversation_data[:i+1]:
-          sender = item["speaker"] == "Person 1"
-          current_y = draw_bubble(
-              in_draw, 
-              in_img,
-              item["message"], 
-              sender=sender, 
-              timestamp=item["timestamp"], 
-              y_position=current_y,
-              name=name
-          )
-          
-      images_list.append(in_img)
+  images_list.append(in_img)
 
   print(f"✍️ DRAW CONVERSATION: Images list: {images_list}")
   return images_list
