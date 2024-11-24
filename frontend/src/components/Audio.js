@@ -23,13 +23,18 @@ const Audio = () => {
     } else {
       setLoading(true);
       try {
-        const response = await axios.post(`${config.backendUrl}/set/audio`, {
-          audio: audio,
+        const formData = new FormData();
+        formData.append('audio', audio);
+
+        const response = await axios.post(`${config.backendUrl}/set/audio`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         });
         console.log('🚀 ~ file: Dashboard.js:34 ~ handleGenerate ~ response:', response.data);
 
-        if (response.data.status === 'success') {
-          navigate('/dashboard');
+        if (response.status === 200) {
+          navigate('/poster');
         }
       } catch (error) {
         console.error('Error generating content:', error);
@@ -56,6 +61,7 @@ const Audio = () => {
             <div className="max-w-lg">
               <h1 className="text-5xl font-bold">Upload your tunes</h1>
             <p className="py-6">
+              { audio ? `${audio.name}` : "Please select an audio file" }
             </p>
             <label className="flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue hover:text-white transition duration-300 ease-in-out">
               <svg className="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

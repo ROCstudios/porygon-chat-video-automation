@@ -15,10 +15,10 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/instaauth" element={<InstaLogin />} />
         <Route path="/redirect" element={<CallbackHandler />} />
-        <Route path="/poster" element={<Poster />} />
         <Route path="/conversation" element={<Conversation />} />
         <Route path="/avatar" element={<Avatar />} />
         <Route path="/audio" element={<Audio />} />
+        <Route path="/poster" element={<Poster />} />
       </Routes>
     </Router>
   );

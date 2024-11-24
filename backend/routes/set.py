@@ -1,10 +1,21 @@
 from flask import Blueprint, request, jsonify
 import os
 from werkzeug.utils import secure_filename
-import tempfile
 import shutil
+import time
+
 
 set_routes = Blueprint('set', __name__)
+
+# Configure upload settings
+UPLOAD_FOLDER = 'uploads/audio'
+ALLOWED_EXTENSIONS = {'mp3', 'wav', 'ogg', 'm4a'}
+MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB limit
+
+# Helper function to check allowed file extensions
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Global storage dictionaries for non-file data
 conversation_data = {}
@@ -36,34 +47,34 @@ def set_avatar():
 
 @set_routes.route('/audio', methods=['POST'])
 def set_audio():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file provided"}), 400
+    try:    
+        if 'audio' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
     
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error": "No file selected"}), 400
-    
-    if file and file.filename.lower().endswith('.mp3'):
-        filename = secure_filename(file.filename)
-        # Clear previous audio files
-        shutil.rmtree(TEMP_AUDIO_DIR)
-        os.makedirs(TEMP_AUDIO_DIR)
+        audio_file = request.files['audio']
+        if audio_file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
         
-        filepath = os.path.join(TEMP_AUDIO_DIR, filename)
-        file.save(filepath)
-        
-        return jsonify({
-            "message": "Audio saved",
-            "filename": filename,
-            "path": filepath
-        })
-    
-    return jsonify({"error": "Invalid file type"}), 400
+        if audio_file != '' and allowed_file(audio_file.filename):
+            filename = secure_filename(audio_file.filename)
 
-# Optional: Add cleanup function if needed
-def cleanup_temp_files():
-    """Clean up temporary files when needed"""
-    if os.path.exists(TEMP_AVATAR_DIR):
-        shutil.rmtree(TEMP_AVATAR_DIR)
-    if os.path.exists(TEMP_AUDIO_DIR):
-        shutil.rmtree(TEMP_AUDIO_DIR)
+            timestamp = str(int(time.time()))
+            filename = f"{timestamp}-{filename}"
+            
+            # Clear previous audio files
+            shutil.rmtree(UPLOAD_FOLDER)
+            os.makedirs(UPLOAD_FOLDER)
+            
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            audio_file.save(filepath)
+            
+            return jsonify({
+                "message": "Audio saved",
+                "filename": filename,
+                "path": filepath
+            })
+        
+        return jsonify({"error": "Invalid file type"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
