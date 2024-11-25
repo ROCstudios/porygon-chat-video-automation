@@ -1,7 +1,7 @@
 import React from 'react';
 
 const StepsIndicator = ({ currentStep }) => {
-  const steps = ['TikTok', 'Instagram', 'Convo', 'Avatar', 'Audio', 'Post'];
+  const steps = ['Convo', 'Avatar', 'Audio', 'Review'];
   
   return (
     <div className="flex justify-center bg-base-200 p-4">

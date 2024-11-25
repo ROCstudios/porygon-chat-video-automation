@@ -20,13 +20,17 @@ const Poster = () => {
 
   const [cloudUrl, setCloudUrl] = useState(null);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (cloudUrl == null) {
-      const movieResponse = await axios.post(`${config.backendUrl}/generate/movie`);
-      console.log('🚀 ~ file: Poster.js:34 ~ useEffect ~ movieResponse:', movieResponse.data);
-      setCloudUrl(movieResponse.data.cloud_url);
+      initPoster();
     }
-  }, [cloudUrl])
+  }, [])
+
+  const initPoster = async () => {
+    const posterResponse = await axios.post(`${config.backendUrl}/generate/movie`);
+    console.log('🚀 ~ file: Poster.js:34 ~ useEffect ~ posterResponse:', posterResponse.data);
+    setCloudUrl(posterResponse.data.cloud_url);
+  }
 
   const handleGenerate = async () => {
     setError(null);
@@ -47,7 +51,7 @@ const Poster = () => {
         if (response.data.status === 'success') {
           setCloudUrl(response.data.cloud_url);
         }
-        
+
       } catch (error) {
         console.error('Error generating content:', error);
         setError("Error: " + error.response.data.error);
@@ -60,7 +64,7 @@ const Poster = () => {
   return (
     <div>
       <NavBar />
-      { error && <ErrorAlert message={error} /> }
+      {error && <ErrorAlert message={error} />}
       <StepsIndicator currentStep={6} />
       <div className="hero bg-base-200 min-h-screen -mt-16">
         <div className="hero-content text-center">
@@ -70,53 +74,15 @@ const Poster = () => {
               <span className="loading loading-dots loading-lg"></span>
             </div>
           ) : (
-            <div className="max-w-lg">
-              <h1 className="text-5xl font-bold">Get Posting!</h1>
-            <p className="py-6">
-            </p>
-            <label>
-              <div className="label">
-                <span className="label-text">Caption for your video</span>
-              </div>
-              <textarea
-                placeholder="Enter a caption for your video..."
-                className="textarea textarea-bordered textarea-lg w-full max-w-lg"
-                onChange={(e) => setCaption(e.target.value)}
-                >
-              </textarea>
-            </label>
-            <div className="flex w-full max-w-lg mb-4">
-              <div className="w-1/2 pr-2">
-                <div className="form-control">
-                    <div className="label">
-                      <span className="label-text">Where we'll post your video</span>
-                    </div>
-                  <label className="cursor-pointer label">
-                    <span className="label-text font-bold">Post to Instagram</span>
-                    <input 
-                      type="checkbox" 
-                      className="checkbox checkbox-primary"
-                      checked={postToIg}
-                      onChange={(e) => setPostToIg(e.target.checked)}
-                    />
-                  </label>
-                </div>
-                <div className="form-control">
-                  <label className="cursor-pointer label">
-                    <span className="label-text font-bold">Post to TikTok</span>
-                    <input 
-                      type="checkbox" 
-                      className="checkbox checkbox-secondary"
-                      checked={postToTiktok}
-                      onChange={(e) => setPostToTiktok(e.target.checked)}
-                    />
-                  </label>
-                </div>
-              </div>
-              <div className="w-1/2 pl-2">
-              </div>
-            </div>
-              <button className="btn btn-primary w-full max-w-lg mt-4" onClick={handleGenerate}>Post it now!!</button>
+            <div className="max-w-2xl">
+              <h1 className="text-5xl font-bold">Take a Look</h1>
+              <p className="py-6">
+              </p>
+              <video alt="Generated video" controls>
+                <source src={cloudUrl} type="video/mp4" />
+              </video>
+
+              <button className="btn btn-primary w-full max-w-xl mt-4" onClick={handleGenerate}>Post it now!!</button>
             </div>
           )}
         </div>

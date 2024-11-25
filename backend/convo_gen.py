@@ -32,7 +32,7 @@ def generate_conversation(topic, num_turns=5):
 
     Something else that is importatant is the timestamps.  They should be sequential and start with the current time like in the example below. There should be no discernable patterns to the timestamps.  For example, if the current time is 1:44 PM, the timestamps COULD BE 01:44 PM, 02:13 PM, 02:17 PM, 3:00 PM, 4:44 PM, 4:59 PM, etc.
 
-    The conversations should reflect a real conversation, defined as not one person talking at a time, but rather two people talking meaning one person can send multiple messages in a row before the other replies.  Though not all of the time, do this randomly to make it more realistic.
+    The conversations should have two people talking meaning one person can send multiple messages in a row before the other replies.  Though not all of the time, do this randomly to make it more realistic.
 
 Here are examples of your output in JSON format between [EXAMPLE] and [END EXAMPLE].  
 [EXAMPLE]
@@ -124,17 +124,15 @@ Now generate the conversation about {topic} with {num_turns} turns in a JSON for
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": conversation_prompt}
             ],
-            temperature=0.8
+            temperature=1.2,
+            top_p=0.9
         )
         print(f"GENERATE CONVERSATION: Response: {response}")
         try:
             # Parse the JSON response - it will be a list of messages
             response_text = response.choices[0].message.content
-            print(f"💬 GENERATE CONVERSATION: Response text: {response_text}")
             new_messages = json.loads(response_text)
-            print(f"💬 GENERATE CONVERSATION: New messages: {new_messages}")
             conversation.extend(new_messages)
-            print(f"💬 GENERATE CONVERSATION: Conversation: {conversation}")
             return conversation
             
         except json.JSONDecodeError:

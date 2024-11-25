@@ -22,12 +22,12 @@ const NavBar = () => {
           <ul
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-            <li><a href="/">TiktTok Login</a></li>
-            <li><a href="/instaauth">Instagram Login</a></li>
-            <li><a href="/conversation">Conversation</a></li>
+            {/* <li><a href="/">TiktTok Login</a></li>
+            <li><a href="/instaauth">Instagram Login</a></li> */}
+            <li><a href="/">Conversation</a></li>
             <li><a href="/avatar">Avatar</a></li>
             <li><a href="/audio">Audio</a></li>
-            <li><a href="/poster">Posting</a></li>
+            <li><a href="/poster">Review</a></li>
           </ul>
         </div>
       </div>

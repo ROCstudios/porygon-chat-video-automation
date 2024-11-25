@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 from routes.auth import auth_routes
 from routes.generate import generate_routes
-from routes.set import set_routes
+from routes.setter import set_routes
 
 def create_app(config_name='default'):
     app = Flask(__name__)

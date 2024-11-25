@@ -12,10 +12,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        {/* <Route path="/" element={<Login />} />
         <Route path="/instaauth" element={<InstaLogin />} />
-        <Route path="/redirect" element={<CallbackHandler />} />
-        <Route path="/conversation" element={<Conversation />} />
+        <Route path="/redirect" element={<CallbackHandler />} /> */}
+        <Route path="/" element={<Conversation />} />
         <Route path="/avatar" element={<Avatar />} />
         <Route path="/audio" element={<Audio />} />
         <Route path="/poster" element={<Poster />} />

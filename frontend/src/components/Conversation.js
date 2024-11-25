@@ -58,6 +58,7 @@ const Conversation = () => {
         responses.forEach(response => {
           if (response.status === 200) {
             setJsonConvos(prevConvos => [...prevConvos, response.data]);
+            console.log(jsonConvos);
           }
         });
       } catch (error) {

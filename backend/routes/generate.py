@@ -1,14 +1,16 @@
 from flask import Blueprint, request, jsonify
 from image_gen import draw_conversation
+from convo_gen import generate_conversation
 from movie_gen import create_video
 from ig_poster import upload_to_instagram
 from cloud_storage import upload_to_gcs
 from tiktok_poster import init_video_upload, upload_video_chunk, check_post_status
+from routes.setter import conversation_data, avatar_data, audio_data
 import os
 
-from set import conversation_data, avatar_data, audio_data
-
 generate_routes = Blueprint('generate', __name__)
+
+temp_video_path = None
 
 @generate_routes.route('/convo', methods=['POST'])
 def generate():
@@ -26,26 +28,26 @@ def generate():
 @generate_routes.route('/movie', methods=['POST'])
 def generate_movie():
 
-    try:
-        images_list = draw_conversation(conversation_data, avatar_data['name'])
-        temp_video_path = create_video(images_list)
-        print('🚀 ~ file: init.py:77 ~ temp_video_path:', temp_video_path);
-        cloud_video_path = upload_to_gcs(temp_video_path)
-        print('🚀 ~ file: init.py:79 ~ cloud_video_path:', cloud_video_path);
+    # return jsonify({'cloud_url': "https://storage.googleapis.com/porygon-video-generation_cloudbuild/reels/20241111_163834__conversation_instagram.mp4"}), 200
+    print(conversation_data)
+    print(avatar_data)
+    # try:
+    images_list = draw_conversation(conversation_data, avatar_data['file_name'], avatar_data['avatar_name'])
+    # temp_video_path = create_video(images_list)
+    # cloud_video_path = upload_to_gcs(temp_video_path)
 
-        
-    except Exception as e:
-        print('🚩 ~ file: init.py:113 ~ e:', e);
-        # Clean up the temp file if there's an error
-        if 'temp_video_path' in locals():
-            try:
-                os.remove(temp_video_path)
-            except:
-                pass
-        return jsonify({'error': str(e)}), 500
+    # except Exception as e:
+    #     print('🚩 ~ file: init.py:113 ~ e:', e);
+    #     # Clean up the temp file if there's an error
+    #     if 'temp_video_path' in locals():
+    #         try:
+    #             os.remove(temp_video_path)
+    #         except:
+    #             pass
+    #     return jsonify({'error': str(e)}), 500
 
-@generate_routes.route('/posts', methods=['POST'])
-def generate_posts():
+@generate_routes.route('/poster', methods=['POST'])
+def generate_poster():
     cloud_video_path = None
 
     data = request.get_json()
@@ -60,12 +62,10 @@ def generate_posts():
 
     if post_to_tiktok:
         publish_id, upload_url = init_video_upload(tiktok_access_token, temp_video_path, caption)
-        print('🚀 ~ file: init.py:87 ~ publish_id, upload_url:', publish_id, upload_url);
         upload_success = upload_video_chunk(upload_url, temp_video_path)
         status_response = check_post_status(tiktok_access_token, publish_id)
 
     response = jsonify({
-        'status': 'success',
         'cloud_url': cloud_video_path
     })
     return response
