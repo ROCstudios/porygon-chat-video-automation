@@ -12,7 +12,7 @@ system_prompt = """
 Write the text at an 3rd grade reading and writing level in simple language. You MUST keep the output in JSON format, specifically the JSON object properties are speaker, message, and timestamp inside json objects inside a single array.
 
 Constraints:
-* Use few emojis.
+* Never use emojis.
 * Remove any labels, instructions, labels, or any other text that is not part of the conversation.
 * ONLY OUTPUT JSON.
 * Keep the same identical formatting of the existing text.

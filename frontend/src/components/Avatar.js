@@ -18,10 +18,10 @@ const Avatar = () => {
 
   const simpleAvatarName = [
     "icons8-circled-user-female-skin-type-1-and-2-96.png",
-    "icons8-circled-user-female-skin-type-1-and-2-96.png",
-    "icons8-circled-user-female-skin-type-5-96.png",
+    "icons8-circled-user-female-skin-type-3-96.png",
+    "icons8-circled-user-female-skin-type-4-96.png",
     "icons8-circled-user-female-skin-type-6-96.png",
-    "icons8-circled-user-female-skin-type-6-96.png",
+    "icons8-circled-user-female-skin-type-7-96.png",
     "icons8-circled-user-male-skin-type-1-and-2-96.png",
     "icons8-circled-user-male-skin-type-3-96.png",
     "icons8-circled-user-male-skin-type-5-96.png",
@@ -31,10 +31,10 @@ const Avatar = () => {
 
   const avatars = [
     require("../assets/icons8-circled-user-female-skin-type-1-and-2-96.png"),
-    require("../assets/icons8-circled-user-female-skin-type-1-and-2-96.png"),
-    require("../assets/icons8-circled-user-female-skin-type-5-96.png"),
+    require("../assets/icons8-circled-user-female-skin-type-3-96.png"),
+    require("../assets/icons8-circled-user-female-skin-type-4-96.png"),
     require("../assets/icons8-circled-user-female-skin-type-6-96.png"),
-    require("../assets/icons8-circled-user-female-skin-type-6-96.png"),
+    require("../assets/icons8-circled-user-female-skin-type-7-96.png"),
     require("../assets/icons8-circled-user-male-skin-type-1-and-2-96.png"),
     require("../assets/icons8-circled-user-male-skin-type-3-96.png"),
     require("../assets/icons8-circled-user-male-skin-type-5-96.png"),

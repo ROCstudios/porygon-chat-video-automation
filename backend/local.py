@@ -36,7 +36,7 @@ def main():
             }
         ],
         "Porygon",
-        "icons8-circled-user-female-skin-type-5-96.png"
+        "icons8-circled-user-female-skin-type-4-96.png"
     )
     print("Images generated successfully!")
     for i, img in enumerate(result):
