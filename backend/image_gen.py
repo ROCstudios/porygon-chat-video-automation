@@ -176,7 +176,7 @@ def draw_action_bar(draw, img, name, file_name):
         phone_icon = Image.open(phone_icon_path)
         phone_icon.thumbnail(icon_size)
         phone_y = (action_bar_height - phone_icon.height) // 2
-        phone_x = width - icon_size[0] - action_bar_padding - phone_icon.width
+        phone_x = width - icon_size[0] - action_bar_padding
 
         if phone_icon.mode == 'RGBA':
             img.paste(phone_icon, (phone_x, phone_y), phone_icon)
@@ -218,7 +218,6 @@ def draw_bubble(
     text = item["message"]
     wrapped_text = textwrap.fill(text, width=43)
 
-    # Deprecated textsize replace with textbbox
     bbox = draw.textbbox((0, 0), wrapped_text, font=font)
     text_width = bbox[2] - bbox[0]
     text_height = bbox[3] - bbox[1]
@@ -249,27 +248,38 @@ def draw_bubble(
         font=font
     )
 
+    timestamp_x = 0
+    # Draw status icon (e.g., check mark for read status)
+    if not sender:
+        check_icon_path = os.path.join(ASSETS_DIR, "check.png")
+        try:
+            check_icon = Image.open(check_icon_path)
+            check_icon.thumbnail((15, 15))
+            check_icon_x = x_position + bubble_width - 20
+            check_icon_y = y_position + bubble_height - 20
+
+            if check_icon.mode == 'RGBA':
+                img.paste(check_icon, (check_icon_x, check_icon_y), check_icon)
+            else:
+                img.paste(check_icon, (check_icon_x, check_icon_y))
+
+            timestamp_x = check_icon_x - 52
+
+        except Exception as e:
+            print(f"❌ Error loading check icon: {str(e)}")
+            timestamp_x = x_position + bubble_width - 48
+    else:
+        timestamp_x = x_position + bubble_width - 65
+        
     # Draw timestamp
-    timestamp_position = (
-        x_position + bubble_width - 65, 
-        y_position + bubble_height - 20
-    )
+    timestamp_y = y_position + bubble_height - 20
+    timestamp_position = (timestamp_x, timestamp_y)
     draw.text(
         timestamp_position, 
         timestamp, 
         fill=timestamp_color, 
         font=timestamp_font
     )
-
-    # Draw status icon (e.g., check mark for read status)
-    # if not sender:
-    #     status_position = (x_position + bubble_width - 10, y_position + bubble_height - 20)
-    #     draw.text(
-    #         status_position, 
-    #         "\u2713\u2713", 
-    #         fill=timestamp_color, 
-    #         font=timestamp_font
-    #     )
 
     # Return the new y_position for the next message
     return y_position + bubble_height + padding, None
