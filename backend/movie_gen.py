@@ -17,8 +17,8 @@ def create_video(images_list):
     numpy_images = [np.array(img) for img in images_list]
     fps = 30 
     # Duplicate each image to maintain the 1 second duration for each image
-    numpy_images = [img for img in numpy_images for _ in range(fps * 3)]
-    duration = len(images_list) * 3
+    numpy_images = [img for img in numpy_images for _ in range(fps * 4)]
+    duration = len(images_list) * 4
 
     clip = ImageSequenceClip(numpy_images, fps=fps)
     clip = clip.set_duration(duration)

@@ -16,7 +16,7 @@ temp_video_path = None
 def generate():
     data = request.get_json()
     topic = data.get('topic')
-    turns = data.get('turns', 15)
+    turns = data.get('turns', 12)
 
     if not topic:
         return jsonify({'error': 'Information is required'}), 400

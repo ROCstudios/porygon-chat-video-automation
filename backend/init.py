@@ -7,6 +7,8 @@ from routes.auth import auth_routes
 from routes.generate import generate_routes
 from routes.setter import set_routes
 
+from routes.generate import generate_image
+
 def create_app(config_name='default'):
     app = Flask(__name__)
 
@@ -32,7 +34,18 @@ app.register_blueprint(generate_routes, url_prefix='/generate')
 app.register_blueprint(set_routes, url_prefix='/set')
 
 def main():
-    pass
+    # Test parameters for image generation
+    test_params = {
+        "prompt": "a cute Porygon pokemon",
+        "negative_prompt": "ugly, blurry",
+        "num_inference_steps": 30,
+        "guidance_scale": 7.5
+    }
+    
+    # Generate the image
+    result = generate_image(test_params)
+    print("Image generated successfully!")
+    print(f"Image saved at: {result['image_path']}")
 
 if __name__ == "__main__":
     # Use PORT environment variable for Cloud Run

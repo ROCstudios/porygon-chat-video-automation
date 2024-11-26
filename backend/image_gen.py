@@ -95,42 +95,70 @@ def draw_text_input_bar(draw, img):
     return search_bar_y
 
 def draw_action_bar(draw, img, name, file_name):
+
     draw.rectangle(
         [(0, 0), (width, action_bar_height)],
         fill=action_bar_color
     )
     
-    # Add the icon with better error handling
+    # Back arrow
+    back_icon_path = os.path.join(ASSETS_DIR, "chevron.png")
+    try:
+        back_icon = Image.open(back_icon_path)
+        back_icon.thumbnail(icon_size)
+        back_y = (action_bar_height - back_icon.height) // 2
+
+        if back_icon.mode == 'RGBA':
+            img.paste(back_icon, (action_bar_padding, back_y), back_icon)
+        else:
+            img.paste(back_icon, (action_bar_padding, back_y))
+    except Exception as e:
+        print(f"❌ Error loading back icon: {str(e)}")
+
+    # Add the icon 
     icon_path = os.path.join(ASSETS_DIR, file_name)
     try:
         if not os.path.exists(icon_path):
             print(f"❌ Icon not found at: {icon_path}")
             raise FileNotFoundError(f"Icon not found at: {icon_path}")
             
-        icon = Image.open(icon_path)
-        
-        # Resize icon while maintaining aspect ratio
-        icon.thumbnail(icon_size)
-        # Calculate vertical position to center the icon
-        icon_y = (action_bar_height - icon.height) // 2
+        profile_icon = Image.open(icon_path)
+        profile_icon.thumbnail(icon_size)
+        profile_icon_y = (action_bar_height - profile_icon.height) // 2
+        profile_icon_x = action_bar_padding + icon_size[0]
         
         # Paste the icon (handles transparency if PNG)
-        if icon.mode == 'RGBA':
-            img.paste(icon, (action_bar_padding, icon_y), icon)
+        if profile_icon.mode == 'RGBA':
+            img.paste(profile_icon, (profile_icon_x, profile_icon_y), profile_icon)
         else:
-            img.paste(icon, (action_bar_padding, icon_y))
+            img.paste(profile_icon, (profile_icon_x, profile_icon_y))
             
-        text_start_x = action_bar_padding + icon_size[0] + action_bar_padding
+        text_start_x = profile_icon_x + icon_size[0] + action_bar_padding
         
     except Exception as e:
         print(f"❌ Error loading icon: {str(e)}")
         # Fallback: start text from the left padding if icon fails
         text_start_x = action_bar_padding
     
+    # Draw phone icon
+    phone_icon_path = os.path.join(ASSETS_DIR, "phone.png")
+    try:
+        phone_icon = Image.open(phone_icon_path)
+        phone_icon.thumbnail(icon_size)
+        phone_y = (action_bar_height - phone_icon.height) // 2
+        phone_x = width - icon_size[0] - action_bar_padding - phone_icon.width
+
+        if phone_icon.mode == 'RGBA':
+            img.paste(phone_icon, (phone_x, phone_y), phone_icon)
+        else:
+            img.paste(phone_icon, (phone_x, phone_y))
+    except Exception as e:
+        print(f"❌ Error loading phone icon: {str(e)}")
+    
     # Draw the action bar text
     text_bbox = draw.textbbox((0, 0), name, font=ImageFont.load_default().font_variant(size=action_bar_text_size))
     text_height = text_bbox[3] - text_bbox[1]
-    text_y = (action_bar_height - text_height) // 2  # Vertically center
+    text_y = (action_bar_height - text_height - action_bar_padding) // 2  
     
     draw.text(
         (text_start_x, text_y),

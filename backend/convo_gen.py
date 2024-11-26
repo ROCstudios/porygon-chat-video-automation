@@ -36,82 +36,11 @@ def generate_conversation(topic, num_turns=5):
     2. The conversations should have two people talking meaning one person can send multiple messages in a row before the other replies.  Though not all of the time, do this randomly to make it more realistic.
     3. The timestamps should be sequential and start with the current time, with no discernible patterns. Additionally, incorporate random intervals for one person to send multiple messages before the other replies to simulate a more realistic conversation flow.
 
-Here are examples of your output in JSON format between [EXAMPLE #1] and [END EXAMPLE #1].  Also, here are examples of [EXAMPLE #2] and [END EXAMPLE #2].  And here are examples of [EXAMPLE #3] and [END EXAMPLE #3].
-Pay special attention to the timestamps and the conversation flow.  IMPORTANT TO NOTE:how one person can send multiple messages in a row before the other replies.
-[EXAMPLE #1]
-[
-    {{   
-        \"speaker\": \"Person 2\",
-        \"message\": \"Sounds good. Looking forward to it!\",
-        \"timestamp\": \"01:44 PM\"
-    }},
-    {{
-        \"speaker\": \"Person 2\",
-        \"message\": \"Great, me too. Talk to you soon!\",
-        \"timestamp\": \"01:49 PM\"
-    }},
-    {{
-        \"speaker\": \"Person 1\",
-        \"message\": \"Sure, see you soon. Have a nice day!\",
-        \"timestamp\": \"02:28 PM\"
-    }},
-    {{
-        \"speaker\": \"Person 2\",
-        \"message\": \"You too, have a great day!\",
-        \"timestamp\": \"03:50 PM\"
-    }}
-]
-[END EXAMPLE #1]
-[EXAMPLE #2]
-[
-    {{   
-        \"speaker\": \"Person 1\",
-        \"message\": \"Sounds good. Looking forward to it!\",
-        \"timestamp\": \"12:01 PM\"
-    }},
-    {{
-        \"speaker\": \"Person 2\",
-        \"message\": \"Great, me too. Talk to you soon!\",
-        \"timestamp\": \"12:02 PM\"
-    }},
-    {{
-        \"speaker\": \"Person 1\",
-        \"message\": \"Sure, see you soon. Have a nice day!\",
-        \"timestamp\": \"01:18 PM\"
-    }},
-    {{
-        \"speaker\": \"Person 2\",
-        \"message\": \"You too, have a great day!\",
-        \"timestamp\": \"01:22 PM\"
-    }}
-]
-[END EXAMPLE]
-[EXAMPLE]
-[
-    {{   
-        \"speaker\": \"Person 1\",
-        \"message\": \"Sounds good. Looking forward to it!\",
-        \"timestamp\": \"12:22 PM\"
-    }},
-    {{
-        \"speaker\": \"Person 2\",
-        \"message\": \"Great, me too. Talk to you soon!\",
-        \"timestamp\": \"12:23 PM\"
-    }},
-    {{
-        \"speaker\": \"Person 1\",
-        \"message\": \"Sure, see you soon. Have a nice day!\",
-        \"timestamp\": \"01:01 PM\"
-    }},
-    {{
-        \"speaker\": \"Person 1\",
-        \"message\": \"You too, have a great day!\",
-        \"timestamp\": \"01:49 PM\"
-    }}
-]
-[END EXAMPLE #3]
+Pay special attention to the timestamps and the conversation flow.  IMPORTANT TO NOTE:how one person will send multiple messages in a row before the other replies.
 
 Now generate the conversation about {topic} with {num_turns} turns in a JSON format like the example above after the colon:
+
+[
 """
     conversation = []
     current_time = datetime.now()
@@ -128,7 +57,7 @@ Now generate the conversation about {topic} with {num_turns} turns in a JSON for
                 {"role": "user", "content": conversation_prompt}
             ],
             temperature=1.2,
-            top_p=0.9
+            top_p=1.0
         )
         print(f"GENERATE CONVERSATION: Response: {response}")
         try:
