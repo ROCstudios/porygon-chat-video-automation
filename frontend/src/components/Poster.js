@@ -27,11 +27,16 @@ const Poster = () => {
   }, [])
 
   const initPoster = async () => {
-    setLoading(true);
-    const posterResponse = await axios.post(`${config.backendUrl}/generate/movie`);
-    console.log('🚀 ~ file: Poster.js:34 ~ useEffect ~ posterResponse:', posterResponse.data);
-    setCloudUrl(posterResponse.data.cloud_url);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const posterResponse = await axios.post(`${config.backendUrl}/generate/movie`);
+      console.log('🚀 ~ file: Poster.js:34 ~ useEffect ~ posterResponse:', posterResponse.data);
+      setCloudUrl(posterResponse.data.cloud_url);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error generating content:', error);
+      setError("Error: " + error.response.data.error);
+    }
   }
 
   const handleGenerate = async () => {
@@ -66,11 +71,11 @@ const Poster = () => {
   return (
     <div>
       <NavBar />
-      {error && <ErrorAlert message={error} />}
+      {error && <ErrorAlert message={error + " : You will likely need to go back to the start and try again."} />}
       <StepsIndicator currentStep={4} />
       <div className="hero bg-base-200 min-h-screen -mt-16">
         <div className="hero-content text-center">
-          {loading ? (
+          {loading && error === null ? (
             <div className="flex flex-col justify-center items-center h-full">
               <p className="text-xl">Please wait...</p>
               <span className="loading loading-dots loading-lg"></span>

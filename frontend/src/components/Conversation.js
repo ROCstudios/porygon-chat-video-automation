@@ -75,8 +75,8 @@ const Conversation = () => {
   return (
     <div>
       <NavBar />
-      <StepsIndicator currentStep={1} />
       {error && <ErrorAlert message={error} />}
+      <StepsIndicator currentStep={1} />
       <div className="hero bg-base-200 min-h-screen -mt-16">
         {
           jsonConvos.length >= 3 && loading === false ? (
