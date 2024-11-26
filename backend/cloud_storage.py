@@ -3,7 +3,7 @@ from google.cloud import storage
 from datetime import datetime
 from google.oauth2.service_account import Credentials
 
-def upload_to_gcs(local_file_path, bucket_name = 'porygon-video-generation_cloudbuild'):
+def upload_to_gcs(local_file_path, bucket_name = 'default-automated-marketing-content-bucket'):
     """
     Upload a file to Google Cloud Storage and return the public URL.
     
@@ -16,7 +16,7 @@ def upload_to_gcs(local_file_path, bucket_name = 'porygon-video-generation_cloud
     """
     try:
         credentials = Credentials.from_service_account_file(
-            'key.json'  # Use the same credentials file as your Google Sheets setup
+            'automated-marketing-442414-a14d5676b6c7.json'
         )
         # Initialize the client
         storage_client = storage.Client(credentials=credentials)

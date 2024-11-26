@@ -12,7 +12,7 @@ def create_app(config_name='default'):
 
     CORS(app, resources={
         r"/*": {
-            "origins": ["http://localhost:3000", "https://porygon-video-generation.web.app", "https://tiktok.oligarchventures.com/*"],  
+            "origins": ["http://localhost:3000", "https://automated-marketing-442414.web.app/*"],  
             "methods": ["GET", "POST"],
             "allow_headers": ["Content-Type", "Authorization"]
         }

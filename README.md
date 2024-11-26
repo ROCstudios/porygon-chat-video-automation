@@ -71,6 +71,15 @@ Let's start with deploying our backend to GCP Cloud Run Service.
 
 Replace `porygon-video-generation` with your project id.  Replace `chat-image-generator` with the name of your service.
 
+Here's what do do if you need permission for your service account:
+```
+gcloud config set project YOUR_PROJECT_ID
+
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+    --member="serviceAccount:YOUR_SERVICE_ACCOUNT_EMAIL" \
+    --role="roles/storage.objectAdmin"
+```
+
 ```
 cd backend
 

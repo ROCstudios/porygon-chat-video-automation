@@ -43,7 +43,7 @@ draw = ImageDraw.Draw(img)
 
 def verify_assets():
     """Verify that all required assets are available."""
-    required_assets = ['profile.png']
+    required_assets = ['icons8-circled-user-female-skin-type-1-and-2-96.png']
     
     for asset in required_assets:
         asset_path = os.path.join(ASSETS_DIR, asset)
