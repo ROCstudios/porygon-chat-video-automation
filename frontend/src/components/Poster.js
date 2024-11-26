@@ -27,9 +27,11 @@ const Poster = () => {
   }, [])
 
   const initPoster = async () => {
+    setLoading(true);
     const posterResponse = await axios.post(`${config.backendUrl}/generate/movie`);
     console.log('🚀 ~ file: Poster.js:34 ~ useEffect ~ posterResponse:', posterResponse.data);
     setCloudUrl(posterResponse.data.cloud_url);
+    setLoading(false);
   }
 
   const handleGenerate = async () => {
@@ -65,7 +67,7 @@ const Poster = () => {
     <div>
       <NavBar />
       {error && <ErrorAlert message={error} />}
-      <StepsIndicator currentStep={6} />
+      <StepsIndicator currentStep={4} />
       <div className="hero bg-base-200 min-h-screen -mt-16">
         <div className="hero-content text-center">
           {loading ? (

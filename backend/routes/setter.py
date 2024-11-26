@@ -12,63 +12,7 @@ ALLOWED_EXTENSIONS = {'mp3', 'wav', 'ogg', 'm4a'}
 MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB limit
 
 # Global storage dictionaries for non-file data
-conversation_data = [
-    {
-        "speaker": "Person 1",
-        "message": "Hey, do you think it's easy to become rich?",
-        "timestamp": "11:07 AM"
-    },
-    {
-        "speaker": "Person 2",
-        "message": "Well, I think it can be hard for some people.",
-        "timestamp": "11:12 AM"
-    },
-    {
-        "speaker": "Person 1",
-        "message": "I guess it takes a lot of hard work, right?",
-        "timestamp": "11:45 AM"
-    },
-    {
-        "speaker": "Person 2",
-        "message": "Yes, and smart decisions too!",
-        "timestamp": "12:03 PM"
-    },
-    {
-        "speaker": "Person 1",
-        "message": "Maybe having a good education helps too?",
-        "timestamp": "12:21 PM"
-    },
-    {
-        "speaker": "Person 2",
-        "message": "Sure, that can open up a lot of opportunities!",
-        "timestamp": "01:10 PM"
-    },
-    {
-        "speaker": "Person 1",
-        "message": "Do you think it's easy to become rich?",
-        "timestamp": "01:30 PM"
-    },
-    {
-        "speaker": "Person 2",
-        "message": "I don't think so. It needs hard work.",
-        "timestamp": "01:33 PM"
-    },
-    {
-        "speaker": "Person 1",
-        "message": "But some people get rich fast, right?",
-        "timestamp": "01:45 PM"
-    },
-    {
-        "speaker": "Person 2",
-        "message": "Yes, but it's so common.",
-        "timestamp": "02:00 PM"
-    },
-    {
-        "speaker": "Person 1",
-        "message": "What's the best way to get rich?",
-        "timestamp": "02:30 PM"
-    },
-]
+convo_data = {}
 avatar_data = {}
 audio_data = {}
 
@@ -80,8 +24,8 @@ def allowed_file(filename):
 @set_routes.route('/convo', methods=['POST'])
 def set_convo():
     data = request.get_json()
-    conversation_data = data
-    return jsonify({"message": "Conversation data saved", "data": conversation_data})
+    convo_data['convo'] = data.get('convo')
+    return jsonify({"message": "Conversation data saved", "data": convo_data})
 
 @set_routes.route('/avatar', methods=['POST'])
 def set_avatar():

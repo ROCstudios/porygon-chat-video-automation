@@ -1,9 +1,10 @@
 import subprocess
 import numpy as np
-from moviepy.editor import ImageSequenceClip
+from moviepy.editor import ImageSequenceClip, AudioFileClip
 import tempfile
 import os
 import shutil
+from routes.setter import audio_data
 
 def save_with_temp_file(video_file, fps):
     with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_file:
@@ -16,15 +17,22 @@ def create_video(images_list):
     numpy_images = [np.array(img) for img in images_list]
     fps = 30 
     # Duplicate each image to maintain the 1 second duration for each image
-    numpy_images = [img for img in numpy_images for _ in range(fps)]
-    duration = len(images_list)
+    numpy_images = [img for img in numpy_images for _ in range(fps * 3)]
+    duration = len(images_list) * 3
 
     clip = ImageSequenceClip(numpy_images, fps=fps)
     clip = clip.set_duration(duration)
+
+    if audio_data['audio_file_name']:
+        audio_clip = AudioFileClip(audio_data['audio_file_path'])
+
+        if audio_clip.duration < duration:
+            pass
+        else:
+            audio_clip = audio_clip.subclip(0, duration)
+        clip = clip.set_audio(audio_clip)
     
-    temp_path = save_with_temp_file(clip, fps)
-    print('📸 ~ file: movie_gen.py:24 ~ temp_path:', temp_path);
-    
+    temp_path = save_with_temp_file(clip, fps)    
     return temp_path
 
 

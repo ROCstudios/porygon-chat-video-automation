@@ -69,7 +69,7 @@ const Audio = () => {
       </dialog>
       <NavBar />
       { error && <ErrorAlert message={error} /> }
-      <StepsIndicator currentStep={5} />
+      <StepsIndicator currentStep={3} />
       <div className="hero bg-base-200 min-h-screen -mt-16">
         <div className="hero-content text-center">
           {loading ? (

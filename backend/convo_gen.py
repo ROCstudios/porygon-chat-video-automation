@@ -12,7 +12,7 @@ system_prompt = """
 Write the text at an 3rd grade reading and writing level in simple language. You MUST keep the output in JSON format, specifically the JSON object properties are speaker, message, and timestamp inside json objects inside a single array.
 
 Constraints:
-* Remove emojis.
+* Use few emojis.
 * Remove any labels, instructions, labels, or any other text that is not part of the conversation.
 * ONLY OUTPUT JSON.
 * Keep the same identical formatting of the existing text.
@@ -30,12 +30,15 @@ def generate_conversation(topic, num_turns=5):
     print(f"💬 GENERATE CONVERSATION: Generating conversation about {topic} with {num_turns} turns")
     prompt = f"""You are generating a friendly conversation between two people, Person 1 and Person 2, about {topic} that should only have {num_turns} text messages. Each person should respond in 1 short sentence. Format each message in JSON format as follows: {{\"speaker\": \"Person X\", \"message\": \"Text\", \"timestamp\": \"Time\"}}. Each response should be a single JSON object.
 
-    Something else that is importatant is the timestamps.  They should be sequential and start with the current time like in the example below. There should be no discernable patterns to the timestamps.  For example, if the current time is 1:44 PM, the timestamps COULD BE 01:44 PM, 02:13 PM, 02:17 PM, 3:00 PM, 4:44 PM, 4:59 PM, etc.
 
-    The conversations should have two people talking meaning one person can send multiple messages in a row before the other replies.  Though not all of the time, do this randomly to make it more realistic.
+    Requirements: 
+    1. Something else that is importatant is the timestamps.  They should be sequential and start with the current time like in the example below. There should be no discernable patterns to the timestamps.  For example, if the current time is 1:44 PM, the timestamps COULD BE 01:44 PM, 02:13 PM, 02:17 PM, 3:00 PM, 4:44 PM, 4:59 PM, etc.
+    2. The conversations should have two people talking meaning one person can send multiple messages in a row before the other replies.  Though not all of the time, do this randomly to make it more realistic.
+    3. The timestamps should be sequential and start with the current time, with no discernible patterns. Additionally, incorporate random intervals for one person to send multiple messages before the other replies to simulate a more realistic conversation flow.
 
-Here are examples of your output in JSON format between [EXAMPLE] and [END EXAMPLE].  
-[EXAMPLE]
+Here are examples of your output in JSON format between [EXAMPLE #1] and [END EXAMPLE #1].  Also, here are examples of [EXAMPLE #2] and [END EXAMPLE #2].  And here are examples of [EXAMPLE #3] and [END EXAMPLE #3].
+Pay special attention to the timestamps and the conversation flow.  IMPORTANT TO NOTE:how one person can send multiple messages in a row before the other replies.
+[EXAMPLE #1]
 [
     {{   
         \"speaker\": \"Person 2\",
@@ -58,8 +61,8 @@ Here are examples of your output in JSON format between [EXAMPLE] and [END EXAMP
         \"timestamp\": \"03:50 PM\"
     }}
 ]
-[END EXAMPLE]
-[EXAMPLE]
+[END EXAMPLE #1]
+[EXAMPLE #2]
 [
     {{   
         \"speaker\": \"Person 1\",
@@ -106,7 +109,7 @@ Here are examples of your output in JSON format between [EXAMPLE] and [END EXAMP
         \"timestamp\": \"01:49 PM\"
     }}
 ]
-[END EXAMPLE]
+[END EXAMPLE #3]
 
 Now generate the conversation about {topic} with {num_turns} turns in a JSON format like the example above after the colon:
 """

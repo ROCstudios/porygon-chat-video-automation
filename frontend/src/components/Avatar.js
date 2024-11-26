@@ -72,7 +72,7 @@ const Avatar = () => {
     <div>
       <NavBar />
       { error && <ErrorAlert message={error} /> }
-      <StepsIndicator currentStep={4} />
+      <StepsIndicator currentStep={2} />
       <div className="hero bg-base-200 min-h-screen -mt-16">
         <div className="hero-content text-center">
           {loading ? (

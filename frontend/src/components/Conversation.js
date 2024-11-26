@@ -32,7 +32,7 @@ const Conversation = () => {
 
   const handleGenerate = async () => {
     setError(null);
-    if (topic === "" || turns === 0 || turns > 10) {
+    if (topic === "" || turns === 0) {
       setError("Please enter valid information");
       return;
     } else {
@@ -40,44 +40,46 @@ const Conversation = () => {
       setJsonConvos([]);
 
       try {
-        const responses = await Promise.all([
-          axios.post(`${config.backendUrl}/generate/convo`, {
-            topic: topic,
-            turns: turns,
-          }),
-          axios.post(`${config.backendUrl}/generate/convo`, {
-            topic: topic,
-            turns: turns,
-          }),
-          axios.post(`${config.backendUrl}/generate/convo`, {
-            topic: topic,
-            turns: turns,
-          })
-        ]);
-
-        responses.forEach(response => {
-          if (response.status === 200) {
-            setJsonConvos(prevConvos => [...prevConvos, response.data]);
-            console.log(jsonConvos);
-          }
+        // Make three sequential API calls
+        const response1 = await axios.post(`${config.backendUrl}/generate/convo`, {
+          topic: topic,
+          turns: turns,
         });
+        if (response1.status === 200) {
+          setJsonConvos(prevConvos => [...prevConvos, response1.data]);
+        }
+
+        const response2 = await axios.post(`${config.backendUrl}/generate/convo`, {
+          topic: topic,
+          turns: turns,
+        });
+        if (response2.status === 200) {
+          setJsonConvos(prevConvos => [...prevConvos, response2.data]);
+        }
+
+        const response3 = await axios.post(`${config.backendUrl}/generate/convo`, {
+          topic: topic,
+          turns: turns,
+        });
+        if (response3.status === 200) {
+          setJsonConvos(prevConvos => [...prevConvos, response3.data]);
+        }
+        setLoading(false);
       } catch (error) {
         console.error('Error generating content:', error);
         setError("Error: " + error.response.data.error);
-      } finally {
-        setLoading(false);
-      }
+      } 
     }
   };
 
   return (
     <div>
       <NavBar />
-      <StepsIndicator currentStep={3} />
+      <StepsIndicator currentStep={1} />
       {error && <ErrorAlert message={error} />}
       <div className="hero bg-base-200 min-h-screen -mt-16">
         {
-          jsonConvos.length > 0 ? (
+          jsonConvos.length >= 3 && loading === false ? (
             <div className="flex flex-col justify-center items-center">
               <div className="label">
                 <span className="label-text text-lg font-bold">Just click on the conversation you want to go with!</span>
@@ -87,6 +89,9 @@ const Conversation = () => {
                   <div className="flex flex-col gap-2 card bg-base-100 w-96 shadow-xl px-4 py-8 mx-aut aspect-[9/16]" onClick={() => convoSelected(jsonConvos[0])}>
                     {jsonConvos[0].map((convo, index) => (
                       <div key={index} className={`chat ${convo.speaker === "Person 1" ? "chat-end" : "chat-start"}`}>
+                        <div className="chat-footer">
+                          <time className="text-xs opacity-50 ml-1">{convo.timestamp}</time>
+                        </div>
                         <div className={`chat-bubble ${convo.speaker === "Person 1" ? "chat-bubble-primary" : "chat-bubble-success"}`}>
                           {convo.message}
                         </div>
@@ -98,6 +103,9 @@ const Conversation = () => {
                   <div className="flex flex-col gap-2 card bg-base-100 w-96 shadow-xl px-4 py-8 mx-auto aspect-[9/16]" onClick={() => convoSelected(jsonConvos[1])}>
                     {jsonConvos[1].map((convo, index) => (
                       <div key={index} className={`chat ${convo.speaker === "Person 1" ? "chat-end" : "chat-start"}`}>
+                        <div className="chat-footer">
+                          <time className="text-xs opacity-50 ml-1">{convo.timestamp}</time>
+                        </div>
                         <div className={`chat-bubble ${convo.speaker === "Person 1" ? "chat-bubble-secondary" : "chat-bubble-info"}`}>
                           {convo.message}
                         </div>
@@ -109,6 +117,9 @@ const Conversation = () => {
                   <div className="flex flex-col gap-2 card bg-base-100 w-96 shadow-xl px-4 py-8 mx-auto aspect-[9/16]" onClick={() => convoSelected(jsonConvos[2])}>
                     {jsonConvos[2].map((convo, index) => (
                       <div key={index} className={`chat ${convo.speaker === "Person 1" ? "chat-end" : "chat-start"}`}>
+                        <div className="chat-footer">
+                          <time className="text-xs opacity-50 ml-1">{convo.timestamp}</time>
+                        </div>
                         <div className={`chat-bubble ${convo.speaker === "Person 1" ? "chat-bubble-accent" : "chat-bubble-error"}`}>
                           {convo.message}
                         </div>
@@ -121,7 +132,7 @@ const Conversation = () => {
             </div>
           ) : (
             <div className="hero-content text-center">
-              {loading && jsonConvos.length === 0 ? (
+              {loading ? (
                 <div className="flex flex-col justify-center items-center h-full">
                   <p className="text-xl">Please wait...</p>
                   <span className="loading loading-dots loading-lg"></span>
@@ -145,7 +156,7 @@ const Conversation = () => {
                   <div className="label">
                     <span className="label-text">Number of chat bubbles</span>
                   </div>
-                  <input type="range" min={0} max="10" value={turns} className="range mt-4" onChange={(e) => setTurns(e.target.value)} />
+                  <input type="range" min={0} max="25" value={turns} className="range mt-4" onChange={(e) => setTurns(e.target.value)} />
                   <p className="font-bold">Number of turns: {turns}</p>
                   <button className="btn btn-primary w-full max-w-lg mt-4" onClick={handleGenerate}>Generate!</button>
                 </div>
