@@ -23,6 +23,7 @@ action_bar_text_color = "white"
 action_bar_text_size = 22
 action_bar_padding = 10
 icon_size = (40, 40)
+small_icon_size = (30, 30)
 
 text_input_bottom_bar_height = 100
 text_input_bottom_bar_color = "#1d1d1d"
@@ -55,7 +56,7 @@ def draw_text_input_bar(draw, img):
     # Draw the background bar
     draw.rectangle(
         [(0, height - text_input_bottom_bar_height), (width, height)],
-        fill=text_input_bottom_bar_color
+        fill=background_color
     )
     
     # Draw rounded search bar
@@ -66,11 +67,13 @@ def draw_text_input_bar(draw, img):
     # Draw rounded rectangle for search bar
     draw.rounded_rectangle(
         [
-            (search_bar_padding, search_bar_y),
-            (width - search_bar_padding, search_bar_y + search_bar_height)
+            (search_bar_padding / 2, search_bar_y - 10),
+            (width - search_bar_padding / 2, search_bar_y + search_bar_height + 10)
         ],
-        radius=22,
-        fill="#1d1d1d"  # Slightly lighter than background
+        radius=64, # hit em with the 64 bits
+        fill=None,
+        outline="#595959",
+        width=2
     )
     
     # Add placeholder text
@@ -78,20 +81,47 @@ def draw_text_input_bar(draw, img):
     placeholder_font = ImageFont.load_default().font_variant(size=18)
     text_bbox = draw.textbbox((0, 0), placeholder_text, font=placeholder_font)
     text_height = text_bbox[3] - text_bbox[1]
-    text_y = search_bar_y + (search_bar_height - text_height) // 2
+    text_y = search_bar_y + (search_bar_height - text_height - search_bar_padding) // 2
     
     draw.text(
-        (search_bar_padding + 45, text_y),  # Extra padding for X icon
+        (search_bar_padding + 64, text_y),  # Extra padding for X icon
         placeholder_text,
         fill="#808080",  # Gray color for placeholder
         font=placeholder_font
     )
-    
+
+    # Draw the plus icon anchored to the left
+    plus_icon_path = os.path.join(ASSETS_DIR, "plus.png")
+    try:
+        plus_icon = Image.open(plus_icon_path)
+        plus_icon.thumbnail(small_icon_size)
+        plus_x = search_bar_padding + 10
+        plus_y = search_bar_y + (search_bar_height - plus_icon.height) // 2
+        
+        if plus_icon.mode == 'RGBA':
+            img.paste(plus_icon, (plus_x, plus_y), plus_icon)
+        else:
+            img.paste(plus_icon, (plus_x, plus_y))
+        
+    except Exception as e:
+        print(f"❌ Error loading plus icon: {str(e)}")
+        
     # Add microphone icon on right (you'll need to implement this with an actual icon)
-    mic_size = 20
-    mic_x = width - search_bar_padding - mic_size - 10
-    mic_y = search_bar_y + (search_bar_height - mic_size) // 2
-    draw.ellipse((mic_x - mic_size, mic_y - mic_size, mic_x + mic_size, mic_y + mic_size), fill="white")
+    mic_icon_path = os.path.join(ASSETS_DIR, "mic.png")
+    try:
+        mic_icon = Image.open(mic_icon_path)
+        mic_icon.thumbnail(small_icon_size)
+        mic_x = width - search_bar_padding - mic_icon.width - 10
+        mic_y = search_bar_y + (search_bar_height - mic_icon.height) // 2
+        
+        if mic_icon.mode == 'RGBA':
+            img.paste(mic_icon, (mic_x, mic_y), mic_icon)
+        else:
+            img.paste(mic_icon, (mic_x, mic_y))
+        
+    except Exception as e:
+        print(f"❌ Error loading mic icon: {str(e)}")
+        
     return search_bar_y
 
 def draw_action_bar(draw, img, name, file_name):
