@@ -32,9 +32,9 @@ def generate_movie():
     print(conversation_data)
     print(avatar_data)
     # try:
-    images_list = draw_conversation(conversation_data, avatar_data['file_name'], avatar_data['avatar_name'])
-    # temp_video_path = create_video(images_list)
-    # cloud_video_path = upload_to_gcs(temp_video_path)
+    images_list = draw_conversation(conversation_data, avatar_data['avatar_name'], avatar_data['file_name'])
+    temp_video_path = create_video(images_list)
+    cloud_video_path = upload_to_gcs(temp_video_path)
 
     # except Exception as e:
     #     print('🚩 ~ file: init.py:113 ~ e:', e);

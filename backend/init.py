@@ -37,4 +37,4 @@ def main():
 if __name__ == "__main__":
     # Use PORT environment variable for Cloud Run
     port = int(os.environ.get("PORT", 8080))
-    app.run(debug=True, host='0.0.0.0', port=port, use_reloader=True)
+    app.run(debug=True, host='0.0.0.0', port=port, use_reloader=True, threaded=False)
