@@ -3,6 +3,8 @@ from PIL import Image, ImageDraw, ImageFont
 import textwrap
 import os
 from threading import Lock
+import requests
+from io import BytesIO
 
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -41,17 +43,6 @@ timestamp_font = ImageFont.load_default().font_variant(size=timestamp_font_size)
 img = Image.new("RGB", (width, height), color=background_color)
 draw = ImageDraw.Draw(img)
 
-def verify_assets():
-    """Verify that all required assets are available."""
-    required_assets = ['icons8-circled-user-female-skin-type-1-and-2-96.png']
-    
-    for asset in required_assets:
-        asset_path = os.path.join(ASSETS_DIR, asset)
-        if not os.path.exists(asset_path):
-            raise FileNotFoundError(
-                f"Required asset not found: {asset_path}\n"
-                f"Please ensure all assets are in the {ASSETS_DIR} directory."
-            )
 def draw_text_input_bar(draw, img):
     # Draw the background bar
     draw.rectangle(
@@ -146,22 +137,27 @@ def draw_action_bar(draw, img, name, file_name):
         print(f"❌ Error loading back icon: {str(e)}")
 
     # Add the icon 
-    icon_path = os.path.join(ASSETS_DIR, file_name)
     try:
-        if not os.path.exists(icon_path):
-            print(f"❌ Icon not found at: {icon_path}")
-            raise FileNotFoundError(f"Icon not found at: {icon_path}")
-            
-        profile_icon = Image.open(icon_path)
-        profile_icon.thumbnail(icon_size)
-        profile_icon_y = (action_bar_height - profile_icon.height) // 2
+        response = requests.get(file_name, timeout=10)
+        image = Image.open(BytesIO(response.content))
+        image.thumbnail(icon_size)
+        profile_icon_y = (action_bar_height - image.height) // 2
         profile_icon_x = action_bar_padding + icon_size[0]
+
+        # Create a circular mask
+        mask = Image.new('L', icon_size, 0)
+        mask_draw = ImageDraw.Draw(mask)
+        mask_draw.ellipse((0, 0, icon_size[0], icon_size[1]), fill=255)
+
+        output = Image.new('RGBA', icon_size)
+        output.paste(image, (0, 0), mask)
+        output.putalpha(mask)
         
         # Paste the icon (handles transparency if PNG)
-        if profile_icon.mode == 'RGBA':
-            img.paste(profile_icon, (profile_icon_x, profile_icon_y), profile_icon)
+        if image.mode == 'RGBA':
+            img.paste(output, (profile_icon_x, profile_icon_y), output)
         else:
-            img.paste(profile_icon, (profile_icon_x, profile_icon_y))
+            img.paste(output, (profile_icon_x, profile_icon_y))
             
         text_start_x = profile_icon_x + icon_size[0] + action_bar_padding
         

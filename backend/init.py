@@ -1,6 +1,5 @@
 import os
-from image_gen import verify_assets
-from flask import Flask, request, jsonify, send_file
+from flask import Flask
 from flask_cors import CORS
 
 from routes.auth import auth_routes
@@ -17,13 +16,6 @@ def create_app(config_name='default'):
             "allow_headers": ["Content-Type", "Authorization"]
         }
     })
-
-    try:
-        verify_assets()
-        print("✅ All required assets verified")
-    except Exception as e:
-        print(f"❌ Asset verification failed: {str(e)}")
-
     return app
 
 app = create_app()

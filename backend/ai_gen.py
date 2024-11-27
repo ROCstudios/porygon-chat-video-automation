@@ -102,7 +102,10 @@ Your job is to take the original which is a conversation between two people and 
         )
         
         # The response contains a URL to the generated image
-        return response.data[0].url
+        url = response.data[0].url
+        print(f"💬 GENERATE IMAGE: URL: {url}")
+        return url
+    
     except Exception as e:
         print(f"Error generating image: {str(e)}")
         return None

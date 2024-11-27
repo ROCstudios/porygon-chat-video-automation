@@ -23,6 +23,9 @@ const Avatar = () => {
   }, []);
 
   const generateAvatars = async () => {
+    if (generatedAvatars.length >= 3) {
+      return;
+    }
     setLoading(true);
     setGeneratedAvatars([]);
     try {

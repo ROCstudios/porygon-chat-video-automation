@@ -19,8 +19,6 @@ RUN mkdir -p /app/assets
 # Copy assets
 COPY assets/* /app/assets/
 
-# Verify assets exist after copying
-RUN python -c "from image_gen import verify_assets; verify_assets()"
 
 # Set environment variables
 ENV PORT=8080

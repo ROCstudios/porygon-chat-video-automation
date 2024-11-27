@@ -1,5 +1,4 @@
 import os
-from image_gen import verify_assets
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 
@@ -37,7 +36,7 @@ def local_screenshot_gen():
             }
         ],
         "Porygon",
-        "icons8-circled-user-female-skin-type-4-96.png"
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/org-tuJXby1unexn4gYXiRai41Dr/user-TWNSwCxTcCjFHTglfIpe3wKm/img-Xn5Qyv49VGqPw3OdAZkD3oYn.png?st=2024-11-27T02%3A22%3A09Z&se=2024-11-27T04%3A22%3A09Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-11-27T00%3A16%3A55Z&ske=2024-11-28T00%3A16%3A55Z&sks=b&skv=2024-08-04&sig=uzHqwt1Y5%2BcA6yYp/Xy9Lo%2BdKu4fj7s9OmAG79zB5oY%3D"
     )
     print("Images generated successfully!")
     for i, img in enumerate(result):
@@ -50,4 +49,5 @@ def local_image_gen():
     print(result)
 
 if __name__ == "__main__":
-    local_image_gen()
+    # local_image_gen()
+    local_screenshot_gen()
