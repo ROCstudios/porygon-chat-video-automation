@@ -1,7 +1,6 @@
 openai
 pillow
-moviepy
-ffmpeg
+moviepy == 1.0.3
 ffmpeg-python
 numpy
 textwrap3

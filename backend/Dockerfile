@@ -7,18 +7,15 @@ WORKDIR /app
 # Copy requirements first for better caching
 COPY requirements.txt .
 
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
 COPY . .
-
-# Create assets directory
-RUN mkdir -p /app/assets
-
-# Copy assets
-COPY assets/* /app/assets/
-
 
 # Set environment variables
 ENV PORT=8080
