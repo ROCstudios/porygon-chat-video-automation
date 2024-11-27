@@ -284,7 +284,7 @@ def draw_conversation(conversation_data, name, file_name, page=1, images_list=No
   if images_list is None:
     images_list = []
 
-  current_y = 50 + action_bar_height  # Starting y position
+  current_y = action_bar_height  # Starting y position
 
   # Initialize single image for complete conversation
   in_img = Image.new("RGB", (width, height), color=background_color)
@@ -310,7 +310,8 @@ def draw_conversation(conversation_data, name, file_name, page=1, images_list=No
         
       if remaining_item:
         images_list.append(in_img)
-        remaining_conversation = conversation_data[i:]
+        start_index = max(0, i - 3)
+        remaining_conversation = conversation_data[start_index:]
         return draw_conversation(
             remaining_conversation, 
             name, 

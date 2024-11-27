@@ -80,11 +80,11 @@ const Conversation = () => {
       <div className="hero bg-base-200 min-h-screen -mt-16">
         {
           jsonConvos.length >= 3 && loading === false ? (
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col">
               <div className="label">
                 <span className="label-text text-lg font-bold">Just click on the conversation you want to go with!</span>
               </div>
-              <div className="hero-content text-center grid grid-cols-3 gap-4">
+              <div className="hero-content grid grid-cols-3 gap-4">
                 <div className="col-span-1">
                   <div className="flex flex-col gap-2 card bg-base-100 w-96 shadow-xl px-4 py-8 mx-aut aspect-[9/16]" onClick={() => convoSelected(jsonConvos[0])}>
                     {jsonConvos[0].map((convo, index) => (

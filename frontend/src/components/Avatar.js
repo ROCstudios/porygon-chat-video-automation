@@ -23,26 +23,24 @@ const Avatar = () => {
   }, []);
 
   const generateAvatars = async () => {
-    if (generatedAvatars.length >= 3) {
-      return;
-    }
     setLoading(true);
-    setGeneratedAvatars([]);
     try {
+      const urls = [];
       const response = await axios.get(`${config.backendUrl}/generate/image`);
       if (response.status === 200) {
-        setGeneratedAvatars(prevAvatars => [...prevAvatars, response.data.image_url]);
+        urls.push(response.data.image_url);
       }
 
       const response2 = await axios.get(`${config.backendUrl}/generate/image`);
       if (response2.status === 200) {
-        setGeneratedAvatars(prevAvatars => [...prevAvatars, response2.data.image_url]);
+        urls.push(response2.data.image_url);
       }   
 
       const response3 = await axios.get(`${config.backendUrl}/generate/image`);
       if (response3.status === 200) {
-        setGeneratedAvatars(prevAvatars => [...prevAvatars, response3.data.image_url]);
+        urls.push(response3.data.image_url);
       }
+      setGeneratedAvatars(urls);
     } catch (error) {
       console.error('Error generating avatars:', error);
     } finally {

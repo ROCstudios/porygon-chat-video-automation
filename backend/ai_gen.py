@@ -38,7 +38,7 @@ def generate_conversation(topic, num_turns=5):
 
 Pay special attention to the timestamps and the conversation flow.  IMPORTANT TO NOTE:how one person will send multiple messages in a row before the other replies.
 
-Now generate the conversation about {topic} with {num_turns} turns in a JSON format like the example above after the colon:
+Now generate the conversation about {topic} with {num_turns} turns in a JSON format.  You MUST have at least 1 instance where 2 messages in a row where one person sends multiple messages in a row before the other replies.
 
 [
 """
