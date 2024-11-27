@@ -1,16 +1,22 @@
 from flask import Blueprint, request, jsonify
 from image_gen import draw_conversation
-from convo_gen import generate_conversation
+from ai_gen import generate_conversation, generate_image
 from movie_gen import create_video
 from ig_poster import upload_to_instagram
 from cloud_storage import upload_to_gcs
 from tiktok_poster import init_video_upload, upload_video_chunk, check_post_status
-from routes.setter import convo_data, avatar_data, audio_data
+from routes.setter import convo_data, avatar_data
 import os
 
 generate_routes = Blueprint('generate', __name__)
 
 temp_video_path = None
+
+@generate_routes.route('/image', methods=['GET'])
+def generater_image():
+    
+    image_url = generate_image(convo_data['convo'])
+    return jsonify({'image_url': image_url}), 200
 
 @generate_routes.route('/convo', methods=['POST'])
 def generate():
@@ -21,7 +27,9 @@ def generate():
     if not topic:
         return jsonify({'error': 'Information is required'}), 400
     
-    conversation_data = generate_conversation(topic, turns)
+    conversation_data = [{'speaker': 'Person 1', 'message': 'Do you believe in love at first sight?', 'timestamp': '11:00 AM'}, {'speaker': 'Person 2', 'message': 'Yes, I think it can happen.', 'timestamp': '11:02 AM'}, {'speaker': 'Person 1', 'message': "That's interesting. I feel the same way.", 'timestamp': '11:04 AM'}, {'speaker': 'Person 2', 'message': "It's a beautiful thing, isn't it?", 'timestamp': '11:06 AM'}, {'speaker': 'Person 1', 'message': 'Yes, it surely is.', 'timestamp': '11:08 AM'}]
+
+    # conversation_data = generate_conversation(topic, turns)
     return jsonify(conversation_data), 200
 
 @generate_routes.route('/movie', methods=['POST'])

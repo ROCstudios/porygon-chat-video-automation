@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
 import NavBar from "./NavBar";
@@ -10,48 +10,53 @@ import ErrorAlert from "./ErrorAlert";
 const Avatar = () => {
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [name, setName] = useState("");
-  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState(-1);
+  const [selectedAvatar, setSelectedAvatar] = useState("");
 
-  const simpleAvatarName = [
-    "icons8-circled-user-female-skin-type-1-and-2-96.png",
-    "icons8-circled-user-female-skin-type-3-96.png",
-    "icons8-circled-user-female-skin-type-4-96.png",
-    "icons8-circled-user-female-skin-type-6-96.png",
-    "icons8-circled-user-female-skin-type-7-96.png",
-    "icons8-circled-user-male-skin-type-1-and-2-96.png",
-    "icons8-circled-user-male-skin-type-3-96.png",
-    "icons8-circled-user-male-skin-type-5-96.png",
-    "icons8-circled-user-male-skin-type-6-96.png",
-    "icons8-male-user-96.png",
-  ]
+  const [generatedAvatars, setGeneratedAvatars] = useState([]);
 
-  const avatars = [
-    require("../assets/icons8-circled-user-female-skin-type-1-and-2-96.png"),
-    require("../assets/icons8-circled-user-female-skin-type-3-96.png"),
-    require("../assets/icons8-circled-user-female-skin-type-4-96.png"),
-    require("../assets/icons8-circled-user-female-skin-type-6-96.png"),
-    require("../assets/icons8-circled-user-female-skin-type-7-96.png"),
-    require("../assets/icons8-circled-user-male-skin-type-1-and-2-96.png"),
-    require("../assets/icons8-circled-user-male-skin-type-3-96.png"),
-    require("../assets/icons8-circled-user-male-skin-type-5-96.png"),
-    require("../assets/icons8-circled-user-male-skin-type-6-96.png"),
-    require("../assets/icons8-male-user-96.png"),
-  ];
+  useEffect(() => {
+    generateAvatars();
+  }, []);
+
+  const generateAvatars = async () => {
+    setLoading(true);
+    setGeneratedAvatars([]);
+    try {
+      const response = await axios.get(`${config.backendUrl}/generate/image`);
+      if (response.status === 200) {
+        setGeneratedAvatars(prevAvatars => [...prevAvatars, response.data.image_url]);
+      }
+
+      const response2 = await axios.get(`${config.backendUrl}/generate/image`);
+      if (response2.status === 200) {
+        setGeneratedAvatars(prevAvatars => [...prevAvatars, response2.data.image_url]);
+      }   
+
+      const response3 = await axios.get(`${config.backendUrl}/generate/image`);
+      if (response3.status === 200) {
+        setGeneratedAvatars(prevAvatars => [...prevAvatars, response3.data.image_url]);
+      }
+    } catch (error) {
+      console.error('Error generating avatars:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const saveAvatar = async () => {
     setError(null);
-    if (name === "" || selectedAvatarIndex === -1) {
+    if (name === "" || selectedAvatar === "") {
       setError("Please enter valid information");
       return;
     } else {
       setLoading(true);
       try {
         const response = await axios.post(`${config.backendUrl}/set/avatar`, {
-          avatar: simpleAvatarName[selectedAvatarIndex],
+          avatar: selectedAvatar,
           name: name
         });
         console.log('🚀 ~ file: Avatar.js:42 ~ saveAvatar ~ response:', response);
@@ -75,7 +80,7 @@ const Avatar = () => {
       <StepsIndicator currentStep={2} />
       <div className="hero bg-base-200 min-h-screen -mt-16">
         <div className="hero-content text-center">
-          {loading ? (
+          {loading && generatedAvatars.length < 3 ? (
             <div className="flex flex-col justify-center items-center h-full">
               <p className="text-xl">Please wait...</p>
               <span className="loading loading-dots loading-lg"></span>
@@ -96,16 +101,17 @@ const Avatar = () => {
                   onChange={(e) => setName(e.target.value)}
                 />
               </label>
-              <div className="grid grid-cols-5 gap-4 mt-4">
-                {avatars.slice(0, 10).map((avatar, index) => (
-                  <div className="avatar" key={index} onClick={() => setSelectedAvatarIndex(index)}>
-                    <div className={`w-24 rounded-full ${selectedAvatarIndex === index ? 'ring ring-secondary ring-offset-base-100 ring-offset-2' : ''}`}>
-                      <img src={avatar} />
+              <div className="grid grid-cols-3 gap-4 mt-4">
+                {generatedAvatars.map((imageUrl, index) => (
+                  <div className="avatar" key={index} onClick={() => setSelectedAvatar(imageUrl)}>
+                    <div className={`w-[120px] h-[120px] rounded-full ${selectedAvatar === imageUrl ? 'ring ring-secondary ring-offset-base-100 ring-offset-2' : ''}`}>
+                      <img src={imageUrl} alt={`Generated avatar ${index + 1}`} />
                     </div>
                   </div>
                 ))}
               </div>
               <button className="btn btn-primary w-full max-w-lg mt-4" onClick={saveAvatar}>Create Avatar!</button>
+              <button className="btn btn-link w-full max-w-lg mt-2" onClick={generateAvatars}>Get New Images</button>
             </div>
           )}
         </div>

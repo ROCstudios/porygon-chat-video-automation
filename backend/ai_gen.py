@@ -73,3 +73,36 @@ Now generate the conversation about {topic} with {num_turns} turns in a JSON for
 
     return conversation
     
+def generate_image(prompt):
+    try:
+        # gpt prompt generation from prompt parameter
+        response = openai.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "system", "content": """
+You are a prompt generator for an image generation AI. You will be given a prompt and you will need to generate a new prompt for the image generation AI.
+
+Your job is to take the original which is a conversation between two people and extract the visual elements of the conversation and create a new prompt for the image generation AI.
+"""}, {"role": "user", "content": f"""Create a prompt for the image generation AI that will make it generate a profile picture for one person based on the following conversation.  It's important to abstract the conversation so we get a visually appealing profile picture without people's faces:
+{prompt}
+"""}],
+            temperature=1.2,
+            top_p=1.0
+        )
+
+        prompt = response.choices[0].message.content
+        print(f"💬 GENERATE IMAGE: Prompt: {prompt}")
+
+        # image generation
+        response = openai.images.generate(
+            model="dall-e-3",  # or "dall-e-2" for the older model
+            prompt=prompt,
+            size="1024x1024",  # other options: "256x256", "512x512"
+            quality="standard",  # or "hd" for dall-e-3
+            n=1  # number of images to generate
+        )
+        
+        # The response contains a URL to the generated image
+        return response.data[0].url
+    except Exception as e:
+        print(f"Error generating image: {str(e)}")
+        return None

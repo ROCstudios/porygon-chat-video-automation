@@ -6,10 +6,11 @@ from flask_cors import CORS
 from routes.auth import auth_routes
 from routes.generate import generate_routes
 from routes.setter import set_routes
+from ai_gen import generate_image
 
 from image_gen import draw_conversation
 
-def main():
+def local_screenshot_gen():
     
     # Generate the image
     result = draw_conversation(
@@ -43,5 +44,10 @@ def main():
         img.show() # This will open each image in the default image viewer
         print(f"Showing image {i+1} of {len(result)}")
 
+def local_image_gen():
+    prompt = "A woman and her sister are discussing their favorite color one of them is wearing a red dress"
+    result = generate_image(prompt)
+    print(result)
+
 if __name__ == "__main__":
-    main()
+    local_image_gen()
