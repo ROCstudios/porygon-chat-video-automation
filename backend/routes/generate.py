@@ -5,7 +5,7 @@ from movie_gen import create_video
 from ig_poster import upload_to_instagram
 from cloud_storage import upload_to_gcs
 from tiktok_poster import init_video_upload, upload_video_chunk, check_post_status
-from routes.setter import convo_data, avatar_data
+from routes.setter import convo_data, avatar_data, audio_data
 import os
 
 generate_routes = Blueprint('generate', __name__)
@@ -37,21 +37,22 @@ def generate_movie():
     # return jsonify({'cloud_url': "https://storage.googleapis.com/porygon-video-generation_cloudbuild/reels/20241111_163834__conversation_instagram.mp4"}), 200
     print(convo_data)
     print(avatar_data)
-    try:    
-        images_list = draw_conversation(convo_data['convo'], avatar_data['avatar_name'], avatar_data['file_name'])
-        temp_video_path = create_video(images_list)
-        cloud_video_path = upload_to_gcs(temp_video_path)
-        return jsonify({'cloud_url': cloud_video_path}), 200
+    print(audio_data)
+    # try:    
+    images_list = draw_conversation(convo_data['convo'], avatar_data['avatar_name'], avatar_data['file_name'])
+    temp_video_path = create_video(images_list, audio_data)
+    cloud_video_path = upload_to_gcs(temp_video_path)
+    return jsonify({'cloud_url': cloud_video_path}), 200
 
-    except Exception as e:
-        print('🚩 ~ file: init.py:113 ~ e:', e);
-        # Clean up the temp file if there's an error
-        if 'temp_video_path' in locals():
-            try:
-                os.remove(temp_video_path)
-            except:
-                pass
-        return jsonify({'error': str(e)}), 500
+    # except Exception as e:
+    #     print('🚩 ~ file: init.py:113 ~ e:', e);
+    #     # Clean up the temp file if there's an error
+    #     if 'temp_video_path' in locals():
+    #         try:
+    #             os.remove(temp_video_path)
+    #         except:
+    #             pass
+    #     return jsonify({'error': str(e)}), 500
 
 @generate_routes.route('/poster', methods=['POST'])
 def generate_poster():

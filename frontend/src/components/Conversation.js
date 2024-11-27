@@ -44,22 +44,34 @@ const Conversation = () => {
         const response1 = await axios.post(`${config.backendUrl}/generate/convo`, {
           topic: topic,
           turns: turns,
+        }, {
+          headers: {
+              'Content-Type': 'application/json',
+          }
         });
         if (response1.status === 200) {
           setJsonConvos(prevConvos => [...prevConvos, response1.data]);
         }
 
-        const response2 = await axios.post(`${config.backendUrl}/generate/convo`, {
+        const response2 = await axios.post(`${config.backendUrl}/generate/convo`, JSON.stringify({
           topic: topic,
           turns: turns,
+        }), {
+          headers: {
+              'Content-Type': 'application/json',
+          }
         });
         if (response2.status === 200) {
           setJsonConvos(prevConvos => [...prevConvos, response2.data]);
         }
 
-        const response3 = await axios.post(`${config.backendUrl}/generate/convo`, {
+        const response3 = await axios.post(`${config.backendUrl}/generate/convo`, JSON.stringify({
           topic: topic,
           turns: turns,
+        }), {
+          headers: {
+              'Content-Type': 'application/json',
+          }
         });
         if (response3.status === 200) {
           setJsonConvos(prevConvos => [...prevConvos, response3.data]);

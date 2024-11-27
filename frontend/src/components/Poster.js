@@ -88,8 +88,6 @@ const Poster = () => {
               <video alt="Generated video" controls>
                 <source src={cloudUrl} type="video/mp4" />
               </video>
-
-              <button className="btn btn-primary w-full max-w-xl mt-4" onClick={handleGenerate}>Post it now!!</button>
             </div>
           )}
         </div>

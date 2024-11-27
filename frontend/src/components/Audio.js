@@ -19,19 +19,22 @@ const Audio = () => {
     document.getElementById('winning_modal').close()
     setLoading(true);
     try {
-      const formData = new FormData();
-      formData.append('audio', audio);
-
-      const response = await axios.post(`${config.backendUrl}/set/audio`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      if (audio !== null) {
+        const formData = new FormData();
+        formData.append('audio', audio);
+  
+        const response = await axios.post(`${config.backendUrl}/set/audio`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        console.log('🚀 ~ file: Dashboard.js:34 ~ handleGenerate ~ response:', response.data);
+  
+        if (response.status === 200) {
+          navigate('/poster');
         }
-      });
-      console.log('🚀 ~ file: Dashboard.js:34 ~ handleGenerate ~ response:', response.data);
-
-      if (response.status === 200) {
-        navigate('/poster');
-      }
+      } 
+      navigate('/poster');
     } catch (error) {
       console.error('Error generating content:', error);
       setError("Error: " + error.response.data.error);
@@ -42,12 +45,7 @@ const Audio = () => {
 
   const handleGenerate = () => {
     setError(null);
-    if (audio === null) {
-      setError("Please upload an audio file");
-      return;
-    } else {
-      document.getElementById('winning_modal').showModal()
-    }
+    document.getElementById('winning_modal').showModal()
   };
 
   return (

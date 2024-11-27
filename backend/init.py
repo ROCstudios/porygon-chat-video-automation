@@ -11,9 +11,9 @@ def create_app(config_name='default'):
 
     CORS(app, resources={
         r"/*": {
-            "origins": ["http://localhost:3000", "https://automated-marketing-442414.web.app/*"],  
+            "origins": ["http://localhost:3000", "https://automated-marketing-442414.web.app", "https://automated-marketing-442414.firebaseapp.com"],  
             "methods": ["GET", "POST"],
-            "allow_headers": ["Content-Type", "Authorization"]
+            "allow_headers": ["Content-Type"],
         }
     })
     return app

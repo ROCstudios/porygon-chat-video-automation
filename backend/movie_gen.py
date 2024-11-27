@@ -23,12 +23,10 @@ def create_video(images_list, audio_data=None):
     clip = ImageSequenceClip(numpy_images, fps=fps)
     clip = clip.set_duration(duration)
 
-    if audio_data['audio_file_name']:
+    if audio_data and audio_data['audio_file_name']:
         audio_clip = AudioFileClip(audio_data['audio_file_path'])
-
-        if audio_clip.duration < duration:
-            pass
-        else:
+        # Trim audio if longer than video duration
+        if audio_clip.duration > duration:
             audio_clip = audio_clip.subclip(0, duration)
         clip = clip.set_audio(audio_clip)
     

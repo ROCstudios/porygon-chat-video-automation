@@ -83,7 +83,7 @@ const Avatar = () => {
         <div className="hero-content text-center">
           {loading && generatedAvatars.length < 3 ? (
             <div className="flex flex-col justify-center items-center h-full">
-              <p className="text-xl">Please wait...</p>
+              <p className="text-xl">Getting avatars. Please wait...</p>
               <span className="loading loading-dots loading-lg"></span>
             </div>
           ) : (

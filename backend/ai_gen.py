@@ -82,7 +82,7 @@ def generate_image(prompt):
 You are a prompt generator for an image generation AI. You will be given a prompt and you will need to generate a new prompt for the image generation AI.
 
 Your job is to take the original which is a conversation between two people and extract the visual elements of the conversation and create a new prompt for the image generation AI.
-"""}, {"role": "user", "content": f"""Create a prompt for the image generation AI that will make it generate a profile picture for one person based on the following conversation.  It's important to abstract the conversation so we get a visually appealing profile picture without people's faces:
+"""}, {"role": "user", "content": f"""Create a prompt for the image generation AI that will make it generate a profile picture for one person based on the following conversation.  It's important to abstract the conversation so we get a visually appealing profile picture without people's faces.  Keep the following concept as simple as possible:
 {prompt}
 """}],
             temperature=1.2,
