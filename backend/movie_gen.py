@@ -12,7 +12,7 @@ def save_with_temp_file(video_file, fps):
         video_file.write_videofile(temp_path, fps=fps, codec='libx264')
     return temp_path
 
-def create_video(images_list):
+def create_video(images_list, audio_data=None):
     print('📸 ~ file: movie_gen.py:15 ~ images_list:', len(images_list));
     numpy_images = [np.array(img) for img in images_list]
     fps = 30 

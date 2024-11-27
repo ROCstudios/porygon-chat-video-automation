@@ -33,7 +33,7 @@ def upload_to_gcs(local_file_path, bucket_name = 'default-automated-marketing-co
         blob.upload_from_filename(local_file_path, if_generation_match=generation_match_precondition)
         
         # Make the blob publicly accessible
-        blob.make_public()
+        # blob.make_public()
         
         # Get the public URL
         public_url = blob.public_url
