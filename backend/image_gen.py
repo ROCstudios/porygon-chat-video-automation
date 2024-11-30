@@ -141,7 +141,7 @@ def draw_action_bar(draw, img, name, file_name):
         image = Image.open(BytesIO(response.content))
         image.thumbnail(icon_size)
         profile_icon_y = (action_bar_height - image.height) // 2
-        profile_icon_x = action_bar_padding + (icon_size[0] * 2)
+        profile_icon_x = action_bar_padding + icon_size[0] + action_bar_padding
 
         # Create a circular mask
         mask = Image.new('L', icon_size, 0)
@@ -207,7 +207,7 @@ def draw_bubble(
     ):
     
     # Determine bubble size
-    padding = 20
+    padding = 10
     max_text_width = 400
 
     text = item["message"]
@@ -250,7 +250,7 @@ def draw_bubble(
         try:
             check_icon = Image.open(check_icon_path)
             check_icon.thumbnail((20,20))
-            check_icon_x = x_position + bubble_width - 20
+            check_icon_x = x_position + bubble_width - 25
             check_icon_y = y_position + bubble_height - 20
 
             if check_icon.mode == 'RGBA':
