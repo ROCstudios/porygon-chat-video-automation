@@ -70,7 +70,7 @@ const Poster = () => {
 
   return (
     <div>
-      <NavBar />
+      <NavBar index={4} />
       {error && <ErrorAlert message={error + " : You will likely need to go back to the start and try again."} />}
       <StepsIndicator currentStep={4} />
       <div className="hero bg-base-200 min-h-screen -mt-16">

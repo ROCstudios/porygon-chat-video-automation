@@ -25,7 +25,7 @@ action_bar_text_color = "white"
 action_bar_text_size = 22
 action_bar_padding = 10
 icon_size = (40, 40)
-small_icon_size = (30, 30)
+small_icon_size = (25, 25)
 
 text_input_bottom_bar_height = 100
 text_input_bottom_bar_color = "#1d1d1d"
@@ -126,7 +126,7 @@ def draw_action_bar(draw, img, name, file_name):
     back_icon_path = os.path.join(ASSETS_DIR, "chevron.png")
     try:
         back_icon = Image.open(back_icon_path)
-        back_icon.thumbnail(icon_size)
+        back_icon.thumbnail(small_icon_size)
         back_y = (action_bar_height - back_icon.height) // 2
 
         if back_icon.mode == 'RGBA':

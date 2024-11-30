@@ -1,40 +1,49 @@
 import React from 'react';
 
-const NavBar = () => {
+const NavBar = ({ index }) => {
+
+  const pages = ["/", "/avatar", "/audio", "/poster"];
+
+  const navigate = (direction) => {
+    const newIndex = direction === 'prev' ? index - 1 : index + 1;
+    window.location.href = pages[newIndex - 1];
+  }
+  
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h7" />
-            </svg>
-          </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-            {/* <li><a href="/">TiktTok Login</a></li>
-            <li><a href="/instaauth">Instagram Login</a></li> */}
+        <div className="flex-none">
+          <ul className="menu menu-horizontal px-1">
             <li><a href="/">Conversation</a></li>
             <li><a href="/avatar">Avatar</a></li>
             <li><a href="/audio">Audio</a></li>
-            <li><a href="/poster">Review</a></li>
+            <li>{index >= 3 ? <a href="/poster">Review</a> : <span className="text-gray-400">Review</span>}</li>
           </ul>
         </div>
       </div>
       <div className="navbar-center">
-        <a className="btn btn-ghost text-xl">AI Content Generator</a>
+        <a className="text-xl p-0">Content Hero</a>
+        <p className="text-sm font-bold pl-1 align-bottom text-gray-400">by Hamo</p>
       </div>
       <div className="navbar-end">
+        <div className="join grid grid-cols-2">
+          {index > 1 && (
+            <button 
+              className="join-item btn btn-outline"
+              onClick={() => navigate('prev')}
+            >
+              Prev
+            </button>
+          )}
+          {index < 4 && (
+            <button 
+              className="join-item btn btn-outline"
+              onClick={() => navigate('next')}
+            >
+              Next
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

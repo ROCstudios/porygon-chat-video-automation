@@ -6,7 +6,7 @@ import openai
 from config import configer
 # Set up your OpenAI API key
 openai.api_key = configer['OPENAI_API_KEY']
-
+model = "gpt-4o-mini"
 #Prompts
 system_prompt = """
 Write the text at an 3rd grade reading and writing level in simple language. You MUST keep the output in JSON format, specifically the JSON object properties are speaker, message, and timestamp inside json objects inside a single array.
@@ -34,7 +34,7 @@ def generate_conversation(topic, num_turns=5):
     Requirements: 
     1. Something else that is importatant is the timestamps.  They should be sequential and start with the current time like in the example below. There should be no discernable patterns to the timestamps.  For example, if the current time is 1:44 PM, the timestamps COULD BE 01:44 PM, 02:13 PM, 02:17 PM, 3:00 PM, 4:44 PM, 4:59 PM, etc.
     2. The conversations should have two people talking meaning one person can send multiple messages in a row before the other replies.  Though not all of the time, do this randomly to make it more realistic.
-    3. The timestamps should be sequential and start with the current time, with no discernible patterns. Additionally, incorporate random intervals for one person to send multiple messages before the other replies to simulate a more realistic conversation flow.
+    3. The timestamps should be sequential and close together and start with the current time, with no discernible patterns. Additionally, incorporate random intervals for one person to send multiple messages before the other replies to simulate a more realistic conversation flow.
 
 Pay special attention to the timestamps and the conversation flow.  IMPORTANT TO NOTE:how one person will send multiple messages in a row before the other replies.
 
@@ -51,7 +51,7 @@ Now generate the conversation about {topic} with {num_turns} turns in a JSON for
 
         # Generate the response using the updated API
         response = openai.chat.completions.create(
-            model="gpt-4",
+            model=model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": conversation_prompt}
@@ -77,12 +77,12 @@ def generate_image(prompt):
     try:
         # gpt prompt generation from prompt parameter
         response = openai.chat.completions.create(
-            model="gpt-4",
+            model=model,
             messages=[{"role": "system", "content": """
 You are a prompt generator for an image generation AI. You will be given a prompt and you will need to generate a new prompt for the image generation AI.
 
 Your job is to take the original which is a conversation between two people and extract the visual elements of the conversation and create a new prompt for the image generation AI.
-"""}, {"role": "user", "content": f"""Create a prompt for the image generation AI that will make it generate a profile picture for one person based on the following conversation.  It's important to abstract the conversation so we get a visually appealing profile picture without people's faces.  Keep the following concept as simple as possible:
+"""}, {"role": "user", "content": f"""Create a prompt for the image generation AI that will make it generate a profile picture for one person based on the following conversation:
 {prompt}
 """}],
             temperature=1.2,

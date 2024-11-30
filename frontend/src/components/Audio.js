@@ -65,7 +65,7 @@ const Audio = () => {
           </div>
         </div>
       </dialog>
-      <NavBar />
+      <NavBar index={3} />
       { error && <ErrorAlert message={error} /> }
       <StepsIndicator currentStep={3} />
       <div className="hero bg-base-200 min-h-screen -mt-16">
