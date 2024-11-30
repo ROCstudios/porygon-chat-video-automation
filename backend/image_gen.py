@@ -31,13 +31,12 @@ text_input_bottom_bar_height = 100
 text_input_bottom_bar_color = "#1d1d1d"
 
 # Font settings
-# font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"  # Replace with your font path
+font_path = "fonts/SF-Pro.ttf"  
 font_size = 16
 timestamp_font_size = 12
 
-# Load fonts
-font = ImageFont.load_default().font_variant(size=font_size)
-timestamp_font = ImageFont.load_default().font_variant(size=timestamp_font_size)
+font = ImageFont.truetype(font_path, font_size)
+timestamp_font = ImageFont.truetype(font_path, timestamp_font_size)
 
 # Initialize image
 img = Image.new("RGB", (width, height), color=background_color)
@@ -123,10 +122,10 @@ def draw_action_bar(draw, img, name, file_name):
     )
     
     # Back arrow
-    back_icon_path = os.path.join(ASSETS_DIR, "chevron.png")
+    back_icon_path = os.path.join(ASSETS_DIR, "back_chevron.png")
     try:
         back_icon = Image.open(back_icon_path)
-        back_icon.thumbnail(small_icon_size)
+        back_icon.thumbnail((15, 15))
         back_y = (action_bar_height - back_icon.height) // 2
 
         if back_icon.mode == 'RGBA':
@@ -142,7 +141,7 @@ def draw_action_bar(draw, img, name, file_name):
         image = Image.open(BytesIO(response.content))
         image.thumbnail(icon_size)
         profile_icon_y = (action_bar_height - image.height) // 2
-        profile_icon_x = action_bar_padding + icon_size[0]
+        profile_icon_x = action_bar_padding + (icon_size[0] * 2)
 
         # Create a circular mask
         mask = Image.new('L', icon_size, 0)
@@ -167,7 +166,7 @@ def draw_action_bar(draw, img, name, file_name):
         text_start_x = action_bar_padding
     
     # Draw phone icon
-    phone_icon_path = os.path.join(ASSETS_DIR, "phone.png")
+    phone_icon_path = os.path.join(ASSETS_DIR, "bold_phone.png")
     try:
         phone_icon = Image.open(phone_icon_path)
         phone_icon.thumbnail(icon_size)
@@ -250,7 +249,7 @@ def draw_bubble(
         check_icon_path = os.path.join(ASSETS_DIR, "check.png")
         try:
             check_icon = Image.open(check_icon_path)
-            check_icon.thumbnail((15, 15))
+            check_icon.thumbnail((20,20))
             check_icon_x = x_position + bubble_width - 20
             check_icon_y = y_position + bubble_height - 20
 

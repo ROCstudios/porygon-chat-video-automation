@@ -85,9 +85,9 @@ const Conversation = () => {
       } catch (error) {
         console.error('Error generating content:', error);
         setError("Error: " + error.response.data.error);
+        setLoading(false);
       } 
     }
-      console.log('🚀 ~ file: Conversation.js:90 ~ handleGenerate ~ setJsonConvos:', setJsonConvos);
   };
 
   return (

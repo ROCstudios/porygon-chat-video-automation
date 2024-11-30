@@ -20,8 +20,6 @@ Constraints:
 
 When writing, please do not use the following words or phrases or any words similar to the following in any of the content:
 realm, landscape, game-changing, in conclusion, firstly, secondly, lastly, delve, in light of, not to mention, to say nothing of, by the same token, moreover, as well as, furthermore, therefore, top-notch, get ready, buckle up, switching gears, dive in, now let’s move on, in conclusion, demystifying, delve, ever-evolving, innovative solution, let’s dive in, let’s delve, folks, picturesque, unleash, dive in, voyage, picture this, say goodbye to, according to my database, treasure trove, let’s begin this journey, let’s delve, go deeper, explore now, navigating, delve into, shed light, gone are the days.
-
-When writing, you may use these words as needed or any words similar to the following, but never in the first line of any chat: first, second, third, important, equally, identically, uniquely, together with, likewise, comparatively, correspondingly, similarly, additionally, explore, crucial, whimsical, embrace, freedom, essential, imperative, important, whilst, explore, discover, elevate, solace.
 """  
 
 
@@ -30,15 +28,15 @@ def generate_conversation(topic, num_turns=5):
     print(f"💬 GENERATE CONVERSATION: Generating conversation about {topic} with {num_turns} turns")
     prompt = f"""You are generating a friendly conversation between two people, Person 1 and Person 2, about {topic} that should only have {num_turns} text messages. Each person should respond in 1 short sentence. Format each message in JSON format as follows: {{\"speaker\": \"Person X\", \"message\": \"Text\", \"timestamp\": \"Time\"}}. Each response should be a single JSON object.
 
+    Generate time stamps for a series of conversations with a pattern that appears random, with frequent but sequential timestamps, and random gaps in time between them, all less than 5 minutes. The timestamps should create the impression of frequent communication between the parties involved while also introducing random pauses to simulate realistic conversation flow. The pattern should not be discernable and should appear genuinely spontaneous and natural, contributing to the authenticity of the overall interaction.
 
     Requirements: 
-    1. Something else that is importatant is the timestamps.  They should be sequential and start with the current time like in the example below. There should be no discernable patterns to the timestamps.  For example, if the current time is 1:44 PM, the timestamps COULD BE 01:44 PM, 02:13 PM, 02:17 PM, 3:00 PM, 4:44 PM, 4:59 PM, etc.
-    2. The conversations should have two people talking meaning one person can send multiple messages in a row before the other replies.  Though not all of the time, do this randomly to make it more realistic.
-    3. The timestamps should be sequential and close together and start with the current time, with no discernible patterns. Additionally, incorporate random intervals for one person to send multiple messages before the other replies to simulate a more realistic conversation flow.
+    1. The conversations should have two people talking meaning one person can send multiple messages in a row before the other replies.  Though not all of the time, do this randomly to make it more realistic.
+    2. Additionally, incorporate random intervals for one person to send multiple messages before the other replies to simulate a more realistic conversation flow.
 
-Pay special attention to the timestamps and the conversation flow.  IMPORTANT TO NOTE:how one person will send multiple messages in a row before the other replies.
+IMPORTANT TO NOTE:how one person will send multiple messages in a row before the other replies.
 
-Now generate the conversation about {topic} with {num_turns} turns in a JSON format.  You MUST have at least 1 instance where 2 messages in a row where one person sends multiple messages in a row before the other replies.
+Now generate the conversation about {topic} with {num_turns} turns in a JSON format.  You MUST have at least 1 instance where 2 messages in a row where one person sends multiple messages in a row before the other replies.  
 
 [
 """
