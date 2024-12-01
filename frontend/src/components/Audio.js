@@ -118,7 +118,7 @@ const Audio = () => {
                           }}
                         />
                         <button 
-                          className="btn btn-sm w-full mt-2"
+                          className="btn btn-sm bg-primary w-full mt-2"
                           onClick={() => setAudio(audio)} 
                         >
                           Select this audio

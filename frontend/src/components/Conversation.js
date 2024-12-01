@@ -51,6 +51,8 @@ const Conversation = () => {
           }
         });
         if (response1.status === 200) {
+          console.log('🚀 ~ file: Conversation.js:54 ~ handleGenerate ~ response1:', response1.data);
+          
           setJsonConvos(prevConvos => [...prevConvos, response1.data]);
         }
 
