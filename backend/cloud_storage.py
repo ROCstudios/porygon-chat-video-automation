@@ -3,6 +3,28 @@ from google.cloud import storage
 from datetime import datetime
 from google.oauth2.service_account import Credentials
 
+def all_files_from_gcs(bucket_name = 'automated-marketing-music-bucket'):
+    """
+    Get all files from Google Cloud Storage
+    """
+    try:
+        credentials = Credentials.from_service_account_file(
+            'automated-marketing-442414-a14d5676b6c7.json'
+        )
+        storage_client = storage.Client(credentials=credentials)
+        bucket = storage_client.bucket(bucket_name)
+        blobs = list(bucket.list_blobs())
+
+        # Make all blobs publicly accessible
+        for blob in blobs:
+            blob.acl.all().grant_read()
+            blob.acl.save()
+        
+        return [blob.public_url for blob in blobs]
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        raise
+
 def upload_to_gcs(local_file_path, bucket_name = 'default-automated-marketing-content-bucket'):
     """
     Upload a file to Google Cloud Storage and return the public URL.

@@ -83,7 +83,7 @@ const Avatar = () => {
             </label>
             {loading ? (
               <div className="flex flex-col justify-center items-center h-full mt-4">
-                <p className="text-xl">Getting avatars. Please wait...</p>
+                <p className="text-xl">Getting avatar. Please wait...</p>
                 <span className="loading loading-dots loading-lg"></span>
               </div>
             ) : (

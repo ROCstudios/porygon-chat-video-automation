@@ -42,9 +42,6 @@ def generate():
 def generate_movie():
     try:
         # return jsonify({'cloud_url': "https://storage.googleapis.com/porygon-video-generation_cloudbuild/reels/20241111_163834__conversation_instagram.mp4"}), 200
-        print(convo_data)
-        print(avatar_data)
-        print(audio_data)
         # try:    
         images_list = draw_conversation(convo_data['convo'], avatar_data['avatar_name'], avatar_data['file_name'])
         temp_video_path = create_video(images_list, audio_data)

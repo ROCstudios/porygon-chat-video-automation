@@ -48,36 +48,20 @@ def set_avatar():
 @set_routes.route('/audio', methods=['POST'])
 def set_audio():
     try:    
-        if 'audio' not in request.files:
-            return jsonify({"error": "No file provided"}), 400
-    
-        audio_file = request.files['audio']
-        if audio_file.filename == '':
-            return jsonify({"error": "No file selected"}), 400
+        data = request.get_json()
+        audio_url = data.get('audio_url')
         
-        if audio_file != '' and allowed_file(audio_file.filename):
-            filename = secure_filename(audio_file.filename)
-
-            timestamp = str(int(time.time()))
-            filename = f"{timestamp}-{filename}"
-            
-            # Clear previous audio files
-            shutil.rmtree(UPLOAD_FOLDER)
-            os.makedirs(UPLOAD_FOLDER)
-            
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
-            audio_file.save(filepath)
-
-            audio_data['audio_file_name'] = filename
-            audio_data['audio_file_path'] = filepath
-            
-            return jsonify({
-                "message": "Audio saved",
-                "filename": filename,
-                "path": filepath
-            })
+        if not audio_url:
+            return jsonify({"error": "No audio URL provided"}), 400
         
-        return jsonify({"error": "Invalid file type"}), 400
+        # Store the URL in the audio_data dictionary
+        audio_data['audio_url'] = audio_url
+        
+        return jsonify({
+            "message": "Audio URL saved",
+            "url": audio_url
+        })
+        
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

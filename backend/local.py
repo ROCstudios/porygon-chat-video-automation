@@ -68,12 +68,11 @@ def load_movie_send_to_cloud():
                 "timestamp": "12:15 PM"
             }
         ],
-        "",
+        "Penumia",
         "https://oaidalleapiprodscus.blob.core.windows.net/private/org-tuJXby1unexn4gYXiRai41Dr/user-TWNSwCxTcCjFHTglfIpe3wKm/img-Xn5Qyv49VGqPw3OdAZkD3oYn.png?st=2024-11-27T02%3A22%3A09Z&se=2024-11-27T04%3A22%3A09Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-11-27T00%3A16%3A55Z&ske=2024-11-28T00%3A16%3A55Z&sks=b&skv=2024-08-04&sig=uzHqwt1Y5%2BcA6yYp/Xy9Lo%2BdKu4fj7s9OmAG79zB5oY%3D"
     )
     temp_video_path = create_video(result, audio_data={
-        "audio_file_name": "test.mp3",
-        "audio_file_path": "uploads/audio/1732679043-FREE_Dark_Lil_Peep_Type_Beat_-_Enchanted_Curse.mp3"
+        "audio_url": "https://storage.googleapis.com/automated-marketing-music-bucket/Ambient%20Motivation.mp3"
     })
     cloud_video_path = upload_to_gcs(temp_video_path)
     print(cloud_video_path)
@@ -86,5 +85,5 @@ def local_image_gen():
 
 if __name__ == "__main__":
     # local_image_gen()
-    local_screenshot_gen()
-    # load_movie_send_to_cloud()
+    # local_screenshot_gen()
+    load_movie_send_to_cloud()

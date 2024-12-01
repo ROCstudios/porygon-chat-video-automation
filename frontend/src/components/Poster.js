@@ -88,6 +88,11 @@ const Poster = () => {
               <video alt="Generated video" controls>
                 <source src={cloudUrl} type="video/mp4" />
               </video>
+              <br/>
+              <br/>
+              <div className="flex flex-row justify-end items-center">
+                <p className="text-md font-bold">To download the video, click these 3 dots and select "Download"</p>
+              </div>
             </div>
           )}
         </div>

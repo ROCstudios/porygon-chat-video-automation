@@ -5,6 +5,17 @@ import tempfile
 import os
 import shutil
 from routes.setter import audio_data
+import requests
+
+def audio_url_to_file(url):
+    response = requests.get(url, stream = True)
+    response.raise_for_status()
+
+    with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
+        for chunk in response.iter_content(chunk_size=8192):
+            if chunk:
+                temp_file.write(chunk)
+        return temp_file.name
 
 def save_with_temp_file(video_file, fps):
     with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_file:
@@ -23,8 +34,10 @@ def create_video(images_list, audio_data=None):
     clip = ImageSequenceClip(numpy_images, fps=fps)
     clip = clip.set_duration(duration)
 
-    if audio_data and audio_data['audio_file_name']:
-        audio_clip = AudioFileClip(audio_data['audio_file_path'])
+    if audio_data and audio_data['audio_url']:
+        audio_file = audio_url_to_file(audio_data['audio_url'])
+        # download the file from url
+        audio_clip = AudioFileClip(audio_file)
         # Trim audio if longer than video duration
         if audio_clip.duration > duration:
             audio_clip = audio_clip.subclip(0, duration)
