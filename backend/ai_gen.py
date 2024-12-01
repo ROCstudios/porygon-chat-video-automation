@@ -35,6 +35,7 @@ def generate_conversation(topic, num_turns=5):
     2. Additionally, incorporate random intervals for one person to send multiple messages before the other replies to simulate a more realistic conversation flow.
 
 IMPORTANT TO NOTE:how one person will send multiple messages in a row before the other replies.
+The timestamps must be in format I%:M% %p for examples 12:11 AM.
 
 Now generate the conversation about {topic} with {num_turns} turns in a JSON format.  You MUST have at least 1 instance where 2 messages in a row where one person sends multiple messages in a row before the other replies.  
 
