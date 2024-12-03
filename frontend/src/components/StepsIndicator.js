@@ -1,10 +1,10 @@
 import React from 'react';
 
 const StepsIndicator = ({ currentStep }) => {
-  const steps = ['Convo', 'Avatar', 'Audio', 'Review'];
+  const steps = ['', '', '', ''];
   
   return (
-    <div className="flex justify-center bg-base-200 p-4">
+    <div className="flex justify-center p-4">
       <ul className="steps">
         {steps.map((step, index) => (
           <li 

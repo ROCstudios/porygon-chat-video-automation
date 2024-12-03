@@ -1,5 +1,5 @@
 import React from 'react';
-
+import StepsIndicator from './StepsIndicator';
 const NavBar = ({ index }) => {
 
   const pages = ["/", "/avatar", "/audio", "/poster"];
@@ -13,6 +13,7 @@ const NavBar = ({ index }) => {
     <div className="navbar bg-base-100">
       <div className="navbar-start">
         <div className="flex-none">
+          <StepsIndicator currentStep={index} />
           <ul className="menu menu-horizontal px-1">
             <li><a href="/">Conversation</a></li>
             <li><a href="/avatar">Avatar</a></li>

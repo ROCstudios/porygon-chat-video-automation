@@ -36,6 +36,17 @@ def generate_conversation(topic, num_turns=5):
 
 IMPORTANT TO NOTE:how one person will send multiple messages in a row before the other replies.
 The timestamps must be in format I%:M% %p for examples 12:11 AM.
+There should be no discernable pattern to the timestamps.  The timestamps should appear random.  This is very important to me, peraonally.
+
+Here is an example of the conversation format you MUST ALWAYS FOLLOW:
+[
+    {{"speaker": "Person 1", "message": "Hello, how are you?", "timestamp": "12:00 AM"}},
+    {{"speaker": "Person 1", "message": "I'm doing great, thanks for asking!", "timestamp": "12:01 AM"}},
+    {{"speaker": "Person 1", "message": "What's new in your life?", "timestamp": "12:01 AM"}},
+    {{"speaker": "Person 2", "message": "Not much, just the usual stuff.", "timestamp": "12:03 AM"}},
+    {{"speaker": "Person 2", "message": "What are you up to?", "timestamp": "12:08 AM"}},
+    {{"speaker": "Person 1", "message": "Just hanging out and relaxing.", "timestamp": "12:09 AM"}},
+]
 
 Now generate the conversation about {topic} with {num_turns} turns in a JSON format.  You MUST have at least 1 instance where 2 messages in a row where one person sends multiple messages in a row before the other replies.  
 

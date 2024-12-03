@@ -82,8 +82,7 @@ const Audio = () => {
       </dialog>
       <NavBar index={3} />
       {error && <ErrorAlert message={error} />}
-      <StepsIndicator currentStep={3} />
-      <div className="hero bg-base-200 min-h-screen -mt-16">
+      <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content text-center">
           <div className="max-w-lg">
             <h1 className="text-5xl font-bold">Upload your tunes</h1>
