@@ -84,16 +84,16 @@ gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
 cd backend
 
 # Runnable Docker
-docker build -t gcr.io/porygon-video-generation/chat-image-generator .
-docker push gcr.io/porygon-video-generation/chat-image-generator
+docker build -t gcr.io/automated-marketing-442414/default-automated-marketing-content .
+docker push gcr.io/automated-marketing-442414/default-automated-marketing-content
 
 # Deploy to Cloud Run
-gcloud builds submit --tag gcr.io/porygon-video-generation/chat-image-generator
+gcloud builds submit --tag gcr.io/automated-marketing-442414/default-automated-marketing-content
 
-gcloud run deploy chat-image-generator --image gcr.io/porygon-video-generation/chat-image-generator --platform managed --region us-central1 --allow-unauthenticated
+gcloud run deploy default-automated-marketing-content --image gcr.io/automated-marketing-442414/default-automated-marketing-content --platform managed --region us-central1 --allow-unauthenticated
 
 # Get service url
-gcloud run services describe chat-image-generator --platform managed --region us-central1 --format 'value(status.url)'
+gcloud run services describe default-automated-marketing-content --platform managed --region us-central1 --format 'value(status.url)'
 
 # Test deployment
 curl -X GET \ 
